@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Теоман — ИИ помощник</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0b1120;
+    color: white;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 42px;
+    margin: 25px 0 5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #94a3b8;
+    margin-bottom: 25px;
+}
+
+.status {
+    text-align: center;
+    color: #22c55e;
+    margin-bottom: 15px;
+}
+
+.chat {
+    background: #111827;
+    border: 1px solid #263449;
+    border-radius: 20px;
+    padding: 15px;
+    min-height: 380px;
+    max-height: 55vh;
+    overflow-y: auto;
+}
+
+.message {
+    padding: 12px 15px;
+    border-radius: 15px;
+    margin: 10px 0;
+    line-height: 1.4;
+}
+
+.teoman {
+    background: #1e293b;
+    margin-right: 35px;
+}
+
+.user {
+    background: #2563eb;
+    margin-left: 35px;
+    text-align: right;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+input {
+    flex: 1;
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid #334155;
+    background: #111827;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+button {
+    border: none;
+    border-radius: 15px;
+    padding: 14px 18px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+button:active {
+    transform: scale(0.96);
+}
+
+.voice {
+    width: 100%;
+    margin-top: 12px;
+    background: #16a34a;
+}
+
+.clear {
+    width: 100%;
+    margin-top: 10px;
+    background: #334155;
+}
+
+.info {
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🤖 Теоман</h1>
+
+    <div class="subtitle">
+        Твой личный ИИ-помощник
+    </div>
+
+    <div class="status">
+        ● Теоман онлайн
+    </div>
+
+    <div class="chat" id="chat">
+
+        <div class="message teoman">
+            Привет! Я Теоман 👋<br>
+            Напиши мне что-нибудь или нажми кнопку 🎤.
+        </div>
+
+    </div>
+
+    <div class="controls">
+
+        <input
+            id="input"
+            type="text"
+            placeholder="Напиши Теоману..."
+            autocomplete="off"
+        >
+
+        <button onclick="sendMessage()">
+            ➤
+        </button>
+
+    </div>
+
+    <button class="voice" onclick="startVoice()">
+        🎤 Говорить с Теоманом
+    </button>
+
+    <button class="clear" onclick="clearChat()">
+        🗑 Очистить чат
+    </button>
+
+    <div class="info">
+        Теоман • версия 1.0
+    </div>
+
+</div>
+
+<script>
+
+const input = document.getElementById("input");
+const chat = document.getElementById("chat");
+
+function addMessage(text, type) {
+
+    const message = document.createElement("div");
+
+    message.className = "message " + type;
+
+    message.innerHTML = text;
+
+    chat.appendChild(message);
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function sendMessage() {
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage(text, "user");
+
+    input.value = "";
+
+    setTimeout(() => {
+
+        const answer = getAnswer(text);
+
+        addMessage(answer, "teoman");
+
+        speak(answer);
+
+    }, 400);
+}
+
+function getAnswer(text) {
+
+    const message = text.toLowerCase();
+
+    if (
+        message.includes("привет") ||
+        message.includes("здравствуй")
+    ) {
+        return "Привет! 👋 Я Теоман. Рад тебя видеть!";
+    }
+
+    if (
+        message.includes("как дела") ||
+        message.includes("как ты")
+    ) {
+        return "Отлично! Я онлайн и готов тебе помогать 😎";
+    }
+
+    if (
+        message.includes("кто ты")
+    ) {
+        return "Я Теоман — твой личный ИИ-помощник 🤖";
+    }
+
+    if (
+        message.includes("спасибо")
+    ) {
+        return "Пожалуйста! ❤️";
+    }
+
+    if (
+        message.includes("пока")
+    ) {
+        return "Пока! До встречи 👋";
+    }
+
+    if (
+        message.includes("время")
+    ) {
+        return "Сейчас " +
+        new Date().toLocaleTimeString("ru-RU", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    return "Я услышал тебя: «" +
+           text +
+           "». Сейчас я работаю в базовом режиме, но мы можем постепенно сделать меня намного умнее 🤖";
+}
+
+function speak(text) {
+
+    if (!("speechSynthesis" in window)) {
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    const voice = new SpeechSynthesisUtterance(text);
+
+    voice.lang = "ru-RU";
+    voice.rate = 0.95;
+    voice.pitch = 1;
+
+    speechSynthesis.speak(voice);
+}
+
+function startVoice() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+        alert(
+            "Голосовой ввод не поддерживается этим браузером."
+        );
+
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "ru-RU";
+    recognition.interimResults = false;
+
+    recognition.onstart = function() {
+
+        addMessage(
+            "🎤 Я слушаю тебя...",
+            "teoman"
+        );
+
+    };
+
+    recognition.onresult = function(event) {
+
+        const text =
+            event.results[0][0].transcript;
+
+        input.value = text;
+
+        sendMessage();
+
+    };
+
+    recognition.onerror = function() {
+
+        addMessage(
+            "Не получилось услышать тебя. Попробуй ещё раз 🎤",
+            "teoman"
+        );
+
+    };
+
+    recognition.start();
+}
+
+function clearChat() {
+
+    chat.innerHTML = `
+        <div class="message teoman">
+            Чат очищен 🧹<br>
+            Я снова готов тебя слушать!
+        </div>
+    `;
+}
+
+input.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+
+});
+
+</script>
+
+</body>
+</html>
