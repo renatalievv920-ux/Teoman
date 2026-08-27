@@ -10,7 +10,7 @@ def send_json(handler, status, data):
     handler.send_response(status)
     handler.send_header("Content-Type", "application/json; charset=utf-8")
     handler.send_header("Access-Control-Allow-Origin", "*")
-    handler.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+    handler.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
     handler.send_header("Access-Control-Allow-Headers", "Content-Type")
     handler.send_header("Content-Length", str(len(body)))
     handler.end_headers()
@@ -34,7 +34,7 @@ class handler(BaseHTTPRequestHandler):
 
             if not api_key:
                 send_json(self, 500, {
-                    "error": "OPENAI_API_KEY не найден в Vercel"
+                    "error": "OPENAI_API_KEY не настроен в Vercel"
                 })
                 return
 
@@ -55,7 +55,7 @@ class handler(BaseHTTPRequestHandler):
                 messages = data.get("messages", [])
 
                 if messages:
-                    message = messages[-1].get("content", "")
+                    message = messages[-1].get("content")
 
             if not message:
                 send_json(self, 400, {
@@ -70,15 +70,16 @@ class handler(BaseHTTPRequestHandler):
                 instructions="""
 Ты — Теоман, личный ИИ-помощник.
 
-Общайся по-русски, дружелюбно и естественно.
+Общайся по-русски, дружелюбно, естественно и без лишней официальности.
 Обращайся к пользователю как к бро, когда это уместно.
 
-Можно использовать нецензурные слова, если пользователь сам общается
-в таком стиле или прямо просит материться. Не надо вставлять мат в каждое
-сообщение — используй его естественно и только когда это подходит ситуации.
+Разрешён разговорный стиль и мат, если пользователь сам общается
+в таком стиле или прямо просит использовать мат. Не вставляй мат
+искусственно в каждый ответ — используй его естественно.
 
-Отвечай понятно, без лишней официальности.
-Если пользователь просит помощь с кодом — помогай пошагово.
+Отвечай понятно и по делу.
+Если пользователь просит помочь с кодом — помогай с кодом.
+Если пользователь просто общается — общайся как обычный собеседник.
 """,
                 input=message
             )
