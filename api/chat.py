@@ -3,6 +3,10 @@ import json
 from http.server import BaseHTTPRequestHandler
 from openai import OpenAI
 
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY")
+)
+
 
 class Handler(BaseHTTPRequestHandler):
 
@@ -22,12 +26,12 @@ class Handler(BaseHTTPRequestHandler):
             "*"
         )
         self.send_header(
-            "Access-Control-Allow-Headers",
-            "Content-Type"
-        )
-        self.send_header(
             "Access-Control-Allow-Methods",
             "POST, OPTIONS"
+        )
+        self.send_header(
+            "Access-Control-Allow-Headers",
+            "Content-Type"
         )
         self.end_headers()
 
@@ -40,50 +44,33 @@ class Handler(BaseHTTPRequestHandler):
 
         try:
             length = int(
-                self.headers.get(
-                    "Content-Length",
-                    0
-                )
+                self.headers.get("Content-Length", 0)
             )
 
             body = self.rfile.read(length)
 
-            data = json.loads(body)
+            data = json.loads(body.decode("utf-8"))
 
-            message = str(
-                data.get("message", "")
-            ).strip()
+            message = data.get("message", "").strip()
 
             if not message:
                 self.send_json(
                     400,
                     {
-                        "error":
-                        "Сообщение пустое"
+                        "error": "Сообщение пустое"
                     }
                 )
                 return
-
-            api_key = os.environ.get(
-                "OPENAI_API_KEY"
-            )
-
-            if not api_key:
-                self.send_json(
-                    500,
-                    {
-                        "error":
-                        "OPENAI_API_KEY не настроен в Vercel"
-                    }
-                )
-                return
-
-            client = OpenAI(
-                api_key=api_key
-            )
 
             response = client.responses.create(
                 model="gpt-5-mini",
+                instructions=(
+                    "Тебя зовут Теоман. "
+                    "Ты дружелюбный личный ИИ-помощник. "
+                    "Отвечай на русском языке. "
+                    "Обращайся к пользователю дружелюбно. "
+                    "Отвечай понятно и не слишком длинно."
+                ),
                 input=message
             )
 
@@ -98,17 +85,29 @@ class Handler(BaseHTTPRequestHandler):
 
         except Exception as e:
 
-            print(
-                "Ошибка API:",
-                repr(e)
-            )
-
             self.send_json(
                 500,
                 {
-                    "error":
-                    "Ошибка сервера",
-                    "details":
-                    str(e)
+                    "error": str(e)
                 }
             )
+
+
+if __name__ == "__main__":
+
+    from http.server import HTTPServer
+
+    port = int(
+        os.environ.get("PORT", 8000)
+    )
+
+    server = HTTPServer(
+        ("0.0.0.0", port),
+        Handler
+    )
+
+    print(
+        f"Теоман запущен на порту {port}"
+    )
+
+    server.serve_forever()
