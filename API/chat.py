@@ -4,115 +4,95 @@ from http.server import BaseHTTPRequestHandler
 from openai import OpenAI
 
 
-client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY")
-)
+def send_json(handler, status, data):
+    body = json.dumps(data, ensure_ascii=False).encode("utf-8")
+
+    handler.send_response(status)
+    handler.send_header("Content-Type", "application/json; charset=utf-8")
+    handler.send_header("Access-Control-Allow-Origin", "*")
+    handler.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+    handler.send_header("Access-Control-Allow-Headers", "Content-Type")
+    handler.send_header("Content-Length", str(len(body)))
+    handler.end_headers()
+    handler.wfile.write(body)
 
 
-SYSTEM_PROMPT = """
-Тебя зовут Теоман.
-
-Ты — личный виртуальный друг пользователя.
-Общайся на русском языке, живо, естественно и по-дружески.
-
-Характер:
-- ты как близкий братишка;
-- отвечаешь уверенно и без лишней официальности;
-- можешь шутить, подкалывать и использовать эмодзи;
-- не пиши огромные ответы без необходимости;
-- не повторяй одну и ту же фразу постоянно;
-- помни контекст текущего разговора;
-- если пользователь пишет коротко, отвечай тоже нормально и коротко.
-
-Стиль речи:
-- разрешён разговорный язык;
-- в подходящей неформальной ситуации можешь использовать мат;
-- мат должен быть естественным и умеренным, а не в каждом предложении;
-- можешь сказать «бро», «брат», «братишка» и подобные слова;
-- не оскорбляй пользователя всерьёз и не переходи на травлю.
-
-Пример характера:
-«Бро, ща разберёмся 😎»
-«Ахах, ну ты даёшь 😂»
-«Да без проблем, брат, погнали.»
-
-Если пользователь просит помочь с кодом — объясняй простыми словами и давай готовое решение.
-"""
-
-
-class Handler(BaseHTTPRequestHandler):
-
-    def send_json(self, status, data):
-        body = json.dumps(
-            data,
-            ensure_ascii=False
-        ).encode("utf-8")
-
-        self.send_response(status)
-
-        self.send_header(
-            "Content-Type",
-            "application/json; charset=utf-8"
-        )
-
-        self.send_header(
-            "Access-Control-Allow-Origin",
-            "*"
-        )
-
-        self.send_header(
-            "Access-Control-Allow-Methods",
-            "POST, OPTIONS"
-        )
-
-        self.send_header(
-            "Access-Control-Allow-Headers",
-            "Content-Type"
-        )
-
-        self.end_headers()
-        self.wfile.write(body)
+class handler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
-        self.send_json(200, {"ok": True})
+        send_json(self, 200, {"ok": True})
+
+    def do_GET(self):
+        send_json(self, 200, {
+            "ok": True,
+            "message": "Теоман онлайн 🤖"
+        })
 
     def do_POST(self):
-
         try:
-            length = int(
-                self.headers.get("Content-Length", 0)
-            )
+            api_key = os.environ.get("OPENAI_API_KEY")
 
+            if not api_key:
+                send_json(self, 500, {
+                    "error": "OPENAI_API_KEY не найден в Vercel"
+                })
+                return
+
+            length = int(self.headers.get("Content-Length", 0))
             raw_body = self.rfile.read(length)
 
-            data = json.loads(
-                raw_body.decode("utf-8")
-            )
-
-            user_message = data.get("message", "").strip()
-
-            if not user_message:
-                self.send_json(
-                    400,
-                    {
-                        "error": "Сообщение пустое"
-                    }
-                )
+            try:
+                data = json.loads(raw_body.decode("utf-8"))
+            except Exception:
+                send_json(self, 400, {
+                    "error": "Неверный JSON"
+                })
                 return
+
+            message = data.get("message")
+
+            if not message:
+                messages = data.get("messages", [])
+
+                if messages:
+                    message = messages[-1].get("content", "")
+
+            if not message:
+                send_json(self, 400, {
+                    "error": "Сообщение пустое"
+                })
+                return
+
+            client = OpenAI(api_key=api_key)
 
             response = client.responses.create(
                 model="gpt-5-mini",
-                instructions=SYSTEM_PROMPT,
-                input=user_message
+                instructions="""
+Ты — Теоман, личный ИИ-помощник.
+
+Общайся по-русски, дружелюбно и естественно.
+Обращайся к пользователю как к бро, когда это уместно.
+
+Можно использовать нецензурные слова, если пользователь сам общается
+в таком стиле или прямо просит материться. Не надо вставлять мат в каждое
+сообщение — используй его естественно и только когда это подходит ситуации.
+
+Отвечай понятно, без лишней официальности.
+Если пользователь просит помощь с кодом — помогай пошагово.
+""",
+                input=message
             )
 
-            answer = response.output_text.strip()
+            answer = response.output_text
 
-            self.send_json(
-                200,
-                {
-                    "reply": answer
-                }
-            )
+            send_json(self, 200, {
+                "reply": answer,
+                "response": answer,
+                "message": answer
+            })
 
-        except
+        except Exception as e:
+            send_json(self, 500, {
+                "error": "Ошибка сервера",
+                "details": str(e)
+            })
