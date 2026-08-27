@@ -3,12 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#070b18"> 
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Зея">
+<meta name="theme-color" content="#070b18">
 <title>Зея — ИИ помощник</title>
 <style>
 * {
@@ -67,8 +62,7 @@ body::after {
   font-size: 30px;
   font-weight: 800;
   letter-spacing: .3px;
-  text-shadow:
-    0 0 20px rgba(90,130,255,.35);
+  text-shadow: 0 0 20px rgba(90,130,255,.35);
 }
 .robot {
   width: 76px;
@@ -104,8 +98,7 @@ body::after {
   color: #5cff91;
   font-size: 17px;
   font-weight: 700;
-  text-shadow:
-    0 0 14px rgba(92,255,145,.45);
+  text-shadow: 0 0 14px rgba(92,255,145,.45);
 }
 .online::before {
   content: "";
@@ -115,8 +108,7 @@ body::after {
   margin-right: 7px;
   border-radius: 50%;
   background: #4dff79;
-  box-shadow:
-    0 0 12px #4dff79;
+  box-shadow: 0 0 12px #4dff79;
   animation: pulse 1.6s infinite;
 }
 @keyframes pulse {
@@ -129,6 +121,42 @@ body::after {
     transform: scale(.75);
   }
 }
+/* ЯЗЫК */
+.language-box {
+  margin: 0 auto 16px;
+  max-width: 500px;
+}
+.language-label {
+  text-align: center;
+  color: #aab6cf;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.language-select {
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: 18px;
+  border: 1px solid #405581;
+  background:
+    linear-gradient(
+      145deg,
+      #172541,
+      #0d162b
+    );
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  outline: none;
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.2);
+}
+.language-select:focus {
+  border-color: #6384ff;
+  box-shadow:
+    0 0 0 3px rgba(80,110,255,.12),
+    0 0 25px rgba(70,100,255,.15);
+}
+/* ЧАТ */
 .chat {
   min-height: 460px;
   max-height: 62vh;
@@ -155,6 +183,7 @@ body::after {
   background: #405581;
   border-radius: 10px;
 }
+/* СООБЩЕНИЯ */
 .message {
   max-width: 88%;
   padding: 16px 19px;
@@ -200,6 +229,7 @@ body::after {
   box-shadow:
     0 8px 28px rgba(50,85,220,.3);
 }
+/* ПЕЧАТЬ */
 .typing {
   display: none;
   width: fit-content;
@@ -230,6 +260,7 @@ body::after {
     opacity: 1;
   }
 }
+/* ВВОД */
 .input-row {
   display: flex;
   gap: 10px;
@@ -288,11 +319,20 @@ input:focus {
 .send:active {
   transform: scale(.93);
 }
+/* СТАТУС */
+.status {
+  min-height: 22px;
+  margin-top: 10px;
+  text-align: center;
+  color: #91a0ba;
+  font-size: 15px;
+}
+/* КНОПКИ */
 .buttons {
   display: flex;
   flex-direction: column;
   gap: 11px;
-  margin-top: 16px;
+  margin-top: 8px;
 }
 button {
   width: 100%;
@@ -364,13 +404,7 @@ button:active {
   box-shadow:
     0 8px 20px rgba(0,0,0,.2);
 }
-.status {
-  min-height: 22px;
-  margin-top: 10px;
-  text-align: center;
-  color: #91a0ba;
-  font-size: 15px;
-}
+/* МОБИЛЬНАЯ ВЕРСИЯ */
 @media (max-width: 600px) {
   .container {
     padding:
@@ -399,9 +433,7 @@ button:active {
   .message {
     max-width: 92%;
     font-size: 17px;
-    padding:
-      15px
-      17px;
+    padding: 15px 17px;
   }
   input {
     font-size: 17px;
@@ -440,18 +472,60 @@ button:active {
       🤖
     </div>
     Зея
-    <div class="online">
+    <div class="online" id="onlineText">
       Готова тебя слушать
     </div>
   </div>
+  <!-- ЯЗЫК -->
+  <div class="language-box">
+    <div class="language-label" id="languageLabel">
+      🌐 Язык Зеи
+    </div>
+    <select
+      id="languageSelect"
+      class="language-select"
+    >
+      <option value="ru-RU">
+        🇷🇺 Русский
+      </option>
+      <option value="tr-TR">
+        🇹🇷 Türkçe
+      </option>
+      <option value="en-US">
+        🇬🇧 English
+      </option>
+      <option value="de-DE">
+        🇩🇪 Deutsch
+      </option>
+      <option value="fr-FR">
+        🇫🇷 Français
+      </option>
+      <option value="es-ES">
+        🇪🇸 Español
+      </option>
+      <option value="it-IT">
+        🇮🇹 Italiano
+      </option>
+      <option value="ar-SA">
+        🇸🇦 العربية
+      </option>
+      <option value="zh-CN">
+        🇨🇳 中文
+      </option>
+      <option value="ja-JP">
+        🇯🇵 日本語
+      </option>
+    </select>
+  </div>
+  <!-- ЧАТ -->
   <div class="chat" id="chat">
     <div class="typing" id="typing">
-      Зея печатает
       <span>•</span>
       <span>•</span>
       <span>•</span>
     </div>
   </div>
+  <!-- ВВОД -->
   <div class="input-row">
     <input
       id="input"
@@ -467,10 +541,12 @@ button:active {
       ➤
     </button>
   </div>
+  <!-- СТАТУС -->
   <div
     class="status"
     id="status"
   ></div>
+  <!-- КНОПКИ -->
   <div class="buttons">
     <button
       id="voiceButton"
@@ -480,12 +556,14 @@ button:active {
       🎙️ Говорить с Зеей
     </button>
     <button
+      id="speakButton"
       class="speak"
       onclick="speakLastAnswer()"
     >
       🔊 Озвучить последний ответ
     </button>
     <button
+      id="clearButton"
       class="clear"
       onclick="clearChat()"
     >
@@ -494,7 +572,9 @@ button:active {
   </div>
 </div>
 <script>
-/* ЭЛЕМЕНТЫ */
+/* =========================
+   ЭЛЕМЕНТЫ
+========================= */
 const chat =
   document.getElementById("chat");
 const input =
@@ -503,27 +583,312 @@ const statusText =
   document.getElementById("status");
 const voiceButton =
   document.getElementById("voiceButton");
+const speakButton =
+  document.getElementById("speakButton");
+const clearButton =
+  document.getElementById("clearButton");
 const typing =
   document.getElementById("typing");
+const languageSelect =
+  document.getElementById("languageSelect");
+const onlineText =
+  document.getElementById("onlineText");
+const languageLabel =
+  document.getElementById("languageLabel");
 let lastAnswer = "";
 let recognition = null;
-/* ПАМЯТЬ */
+let currentLanguage =
+  localStorage.getItem("zeya_language")
+  || "ru-RU";
+/* =========================
+   ПЕРЕВОДЫ
+========================= */
+const translations = {
+  "ru-RU": {
+    name: "Зея",
+    online: "Готова тебя слушать",
+    placeholder: "Напиши Зее...",
+    voice: "🎙️ Говорить с Зеей",
+    listening: "🔴 Слушаю тебя...",
+    speak: "🔊 Озвучить последний ответ",
+    clear: "🧹 Очистить память",
+    language: "🌐 Язык Зеи",
+    thinking: "Зея думает... 🤖",
+    speaking: "Говори...",
+    welcome: "Привет! 👋 Я Зея. Чем могу помочь?",
+    cleared: "Чат очищен 🧹\nЯ снова готова тебя слушать!",
+    noAnswer: "Пока нечего озвучивать.",
+    noVoice: "Голосовой ввод не поддерживается этим браузером.",
+    noSpeech: "Озвучивание не поддерживается.",
+    micError: "Не удалось услышать голос",
+    connection: "Не получилось связаться с сервером 😕",
+    error: "Ошибка соединения",
+    ready: "Готова тебя слушать",
+    memoryCleared: "Память очищена"
+  },
+  "tr-TR": {
+    name: "Zeya",
+    online: "Seni dinlemeye hazırım",
+    placeholder: "Zeya'ya yaz...",
+    voice: "🎙️ Zeya ile konuş",
+    listening: "🔴 Seni dinliyorum...",
+    speak: "🔊 Son cevabı seslendir",
+    clear: "🧹 Hafızayı temizle",
+    language: "🌐 Zeya'nın dili",
+    thinking: "Zeya düşünüyor... 🤖",
+    speaking: "Konuş...",
+    welcome: "Merhaba! 👋 Ben Zeya. Sana nasıl yardımcı olabilirim?",
+    cleared: "Sohbet temizlendi 🧹\nSeni tekrar dinlemeye hazırım!",
+    noAnswer: "Seslendirilecek bir cevap yok.",
+    noVoice: "Bu tarayıcı sesli girişi desteklemiyor.",
+    noSpeech: "Seslendirme desteklenmiyor.",
+    micError: "Sesini duyamadım",
+    connection: "Sunucuya bağlanılamadı 😕",
+    error: "Bağlantı hatası",
+    ready: "Seni dinlemeye hazırım",
+    memoryCleared: "Hafıza temizlendi"
+  },
+  "en-US": {
+    name: "Zeya",
+    online: "Ready to listen",
+    placeholder: "Write to Zeya...",
+    voice: "🎙️ Talk to Zeya",
+    listening: "🔴 Listening...",
+    speak: "🔊 Speak last answer",
+    clear: "🧹 Clear memory",
+    language: "🌐 Zeya's language",
+    thinking: "Zeya is thinking... 🤖",
+    speaking: "Speak...",
+    welcome: "Hello! 👋 I'm Zeya. How can I help you?",
+    cleared: "Chat cleared 🧹\nI'm ready to listen again!",
+    noAnswer: "There is nothing to speak yet.",
+    noVoice: "Voice input is not supported by this browser.",
+    noSpeech: "Speech synthesis is not supported.",
+    micError: "I couldn't hear you",
+    connection: "Couldn't connect to the server 😕",
+    error: "Connection error",
+    ready: "Ready to listen",
+    memoryCleared: "Memory cleared"
+  },
+  "de-DE": {
+    name: "Zeya",
+    online: "Ich bin bereit zuzuhören",
+    placeholder: "Schreib Zeya...",
+    voice: "🎙️ Mit Zeya sprechen",
+    listening: "🔴 Ich höre zu...",
+    speak: "🔊 Letzte Antwort vorlesen",
+    clear: "🧹 Speicher löschen",
+    language: "🌐 Sprache von Zeya",
+    thinking: "Zeya denkt nach... 🤖",
+    speaking: "Sprich...",
+    welcome: "Hallo! 👋 Ich bin Zeya. Wie kann ich helfen?",
+    cleared: "Chat gelöscht 🧹\nIch bin wieder bereit zuzuhören!",
+    noAnswer: "Noch nichts zum Vorlesen.",
+    noVoice: "Spracheingabe wird von diesem Browser nicht unterstützt.",
+    noSpeech: "Sprachausgabe wird nicht unterstützt.",
+    micError: "Ich konnte dich nicht hören",
+    connection: "Keine Verbindung zum Server 😕",
+    error: "Verbindungsfehler",
+    ready: "Ich bin bereit zuzuhören",
+    memoryCleared: "Speicher gelöscht"
+  },
+  "fr-FR": {
+    name: "Zeya",
+    online: "Prête à vous écouter",
+    placeholder: "Écris à Zeya...",
+    voice: "🎙️ Parler avec Zeya",
+    listening: "🔴 Je vous écoute...",
+    speak: "🔊 Lire la dernière réponse",
+    clear: "🧹 Effacer la mémoire",
+    language: "🌐 Langue de Zeya",
+    thinking: "Zeya réfléchit... 🤖",
+    speaking: "Parlez...",
+    welcome: "Bonjour ! 👋 Je suis Zeya. Comment puis-je vous aider ?",
+    cleared: "Chat effacé 🧹\nJe suis prête à vous écouter !",
+    noAnswer: "Rien à lire pour le moment.",
+    noVoice: "La saisie vocale n'est pas prise en charge.",
+    noSpeech: "La synthèse vocale n'est pas prise en charge.",
+    micError: "Je ne vous ai pas entendu",
+    connection: "Impossible de contacter le serveur 😕",
+    error: "Erreur de connexion",
+    ready: "Prête à vous écouter",
+    memoryCleared: "Mémoire effacée"
+  },
+  "es-ES": {
+    name: "Zeya",
+    online: "Lista para escucharte",
+    placeholder: "Escribe a Zeya...",
+    voice: "🎙️ Hablar con Zeya",
+    listening: "🔴 Te escucho...",
+    speak: "🔊 Leer última respuesta",
+    clear: "🧹 Borrar memoria",
+    language: "🌐 Idioma de Zeya",
+    thinking: "Zeya está pensando... 🤖",
+    speaking: "Habla...",
+    welcome: "¡Hola! 👋 Soy Zeya. ¿Cómo puedo ayudarte?",
+    cleared: "Chat borrado 🧹\n¡Estoy lista para escucharte otra vez!",
+    noAnswer: "Todavía no hay nada que leer.",
+    noVoice: "La entrada de voz no es compatible.",
+    noSpeech: "La síntesis de voz no es compatible.",
+    micError: "No pude escucharte",
+    connection: "No se pudo conectar con el servidor 😕",
+    error: "Error de conexión",
+    ready: "Lista para escucharte",
+    memoryCleared: "Memoria borrada"
+  },
+  "it-IT": {
+    name: "Zeya",
+    online: "Pronta ad ascoltarti",
+    placeholder: "Scrivi a Zeya...",
+    voice: "🎙️ Parla con Zeya",
+    listening: "🔴 Ti ascolto...",
+    speak: "🔊 Leggi ultima risposta",
+    clear: "🧹 Cancella memoria",
+    language: "🌐 Lingua di Zeya",
+    thinking: "Zeya sta pensando... 🤖",
+    speaking: "Parla...",
+    welcome: "Ciao! 👋 Sono Zeya. Come posso aiutarti?",
+    cleared: "Chat cancellata 🧹\nSono pronta ad ascoltarti di nuovo!",
+    noAnswer: "Non c'è ancora nulla da leggere.",
+    noVoice: "L'input vocale non è supportato.",
+    noSpeech: "La sintesi vocale non è supportata.",
+    micError: "Non sono riuscita a sentirti",
+    connection: "Impossibile connettersi al server 😕",
+    error: "Errore di connessione",
+    ready: "Pronta ad ascoltarti",
+    memoryCleared: "Memoria cancellata"
+  },
+  "ar-SA": {
+    name: "زيا",
+    online: "جاهزة للاستماع إليك",
+    placeholder: "اكتب إلى زيا...",
+    voice: "🎙️ تحدث مع زيا",
+    listening: "🔴 أستمع إليك...",
+    speak: "🔊 نطق آخر إجابة",
+    clear: "🧹 مسح الذاكرة",
+    language: "🌐 لغة زيا",
+    thinking: "زيا تفكر... 🤖",
+    speaking: "تحدث...",
+    welcome: "مرحباً! 👋 أنا زيا. كيف يمكنني مساعدتك؟",
+    cleared: "تم مسح المحادثة 🧹\nأنا جاهزة للاستماع إليك مرة أخرى!",
+    noAnswer: "لا يوجد شيء لنطقه بعد.",
+    noVoice: "الإدخال الصوتي غير مدعوم.",
+    noSpeech: "تحويل النص إلى كلام غير مدعوم.",
+    micError: "لم أتمكن من سماعك",
+    connection: "تعذر الاتصال بالخادم 😕",
+    error: "خطأ في الاتصال",
+    ready: "جاهزة للاستماع إليك",
+    memoryCleared: "تم مسح الذاكرة"
+  },
+  "zh-CN": {
+    name: "Zeya",
+    online: "准备听你说话",
+    placeholder: "给 Zeya 写消息...",
+    voice: "🎙️ 和 Zeya 说话",
+    listening: "🔴 我在听...",
+    speak: "🔊 播放最后的回答",
+    clear: "🧹 清除记忆",
+    language: "🌐 Zeya 的语言",
+    thinking: "Zeya 正在思考... 🤖",
+    speaking: "请说...",
+    welcome: "你好！👋 我是 Zeya。有什么可以帮助你的吗？",
+    cleared: "聊天已清除 🧹\n我准备好再次听你说话了！",
+    noAnswer: "目前没有可以朗读的内容。",
+    noVoice: "此浏览器不支持语音输入。",
+    noSpeech: "此浏览器不支持语音合成。",
+    micError: "我没有听清你说的话",
+    connection: "无法连接服务器 😕",
+    error: "连接错误",
+    ready: "准备听你说话",
+    memoryCleared: "记忆已清除"
+  },
+  "ja-JP": {
+    name: "ゼヤ",
+    online: "聞く準備ができています",
+    placeholder: "ゼヤに入力...",
+    voice: "🎙️ ゼヤと話す",
+    listening: "🔴 聞いています...",
+    speak: "🔊 最後の回答を読み上げる",
+    clear: "🧹 メモリを消去",
+    language: "🌐 ゼヤの言語",
+    thinking: "ゼヤが考えています... 🤖",
+    speaking: "話してください...",
+    welcome: "こんにちは！👋 私はゼヤです。どうお手伝いしましょうか？",
+    cleared: "チャットを消去しました 🧹\nもう一度お話を聞く準備ができています！",
+    noAnswer: "読み上げる回答がありません。",
+    noVoice: "このブラウザでは音声入力に対応していません。",
+    noSpeech: "音声読み上げに対応していません。",
+    micError: "聞き取れませんでした",
+    connection: "サーバーに接続できませんでした 😕",
+    error: "接続エラー",
+    ready: "聞く準備ができています",
+    memoryCleared: "メモリを消去しました"
+  }
+};
+/* =========================
+   ПАМЯТЬ
+========================= */
 let memory = JSON.parse(
-  localStorage.getItem("teoman_memory") || "[]"
+  localStorage.getItem("zeya_memory") || "[]"
 );
 function saveMemory() {
   localStorage.setItem(
-    "teoman_memory",
+    "zeya_memory",
     JSON.stringify(memory)
   );
 }
-/* ПОКАЗ СООБЩЕНИЯ */
+/* =========================
+   ТЕКСТ
+========================= */
+function t(key) {
+  return (
+    translations[currentLanguage]?.[key]
+    ||
+    translations["en-US"][key]
+    ||
+    key
+  );
+}
+/* =========================
+   ЯЗЫК
+========================= */
+function setLanguage(language) {
+  currentLanguage = language;
+  localStorage.setItem(
+    "zeya_language",
+    language
+  );
+  updateInterface();
+}
+/* =========================
+   ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
+========================= */
+function updateInterface() {
+  languageSelect.value =
+    currentLanguage;
+  onlineText.textContent =
+    t("online");
+  input.placeholder =
+    t("placeholder");
+  voiceButton.textContent =
+    t("voice");
+  speakButton.textContent =
+    t("speak");
+  clearButton.textContent =
+    t("clear");
+  languageLabel.textContent =
+    t("language");
+}
+/* =========================
+   ПОКАЗ СООБЩЕНИЯ
+========================= */
 function addMessage(text, type) {
   const message =
     document.createElement("div");
   message.className =
     "message " + type;
-  message.textContent = text;
+  message.textContent =
+    text;
   chat.insertBefore(
     message,
     typing
@@ -531,13 +896,15 @@ function addMessage(text, type) {
   chat.scrollTop =
     chat.scrollHeight;
 }
-/* ЗАГРУЗКА ПАМЯТИ */
+/* =========================
+   ЗАГРУЗКА ПАМЯТИ
+========================= */
 function loadMemory() {
   chat.innerHTML = "";
   chat.appendChild(typing);
   if (memory.length === 0) {
     addMessage(
-      "Привет! 👋 Я Зея. Чем могу помочь?",
+      t("welcome"),
       "bot"
     );
     return;
@@ -557,8 +924,9 @@ function loadMemory() {
     }
   }
 }
-loadMemory();
-/* ИНДИКАТОР ПЕЧАТАНИЯ */
+/* =========================
+   ПЕЧАТЬ
+========================= */
 function showTyping() {
   typing.style.display =
     "block";
@@ -569,7 +937,9 @@ function hideTyping() {
   typing.style.display =
     "none";
 }
-/* ОТПРАВКА */
+/* =========================
+   ОТПРАВКА
+========================= */
 async function sendMessage() {
   const message =
     input.value.trim();
@@ -585,7 +955,7 @@ async function sendMessage() {
   saveMemory();
   input.value = "";
   statusText.textContent =
-    "Зея думает... 🤖";
+    t("thinking");
   showTyping();
   try {
     const response =
@@ -599,7 +969,8 @@ async function sendMessage() {
           },
           body:
             JSON.stringify({
-              message: message
+              message: message,
+              language: currentLanguage
             })
         }
       );
@@ -613,7 +984,7 @@ async function sendMessage() {
       await response.json();
     const answer =
       data.reply ||
-      "Я не получила ответ.";
+      "I didn't receive a response.";
     hideTyping();
     lastAnswer =
       answer;
@@ -627,19 +998,21 @@ async function sendMessage() {
     });
     saveMemory();
     statusText.textContent =
-      "Готова тебя слушать";
+      t("ready");
   } catch (error) {
     console.error(error);
     hideTyping();
     addMessage(
-      "Не получилось связаться с сервером 😕",
+      t("connection"),
       "bot"
     );
     statusText.textContent =
-      "Ошибка соединения";
+      t("error");
   }
 }
-/* ENTER */
+/* =========================
+   ENTER
+========================= */
 input.addEventListener(
   "keydown",
   function(event) {
@@ -651,14 +1024,16 @@ input.addEventListener(
     }
   }
 );
-/* ГОЛОСОВОЙ ВВОД */
+/* =========================
+   ГОЛОСОВОЙ ВВОД
+========================= */
 function startVoice() {
   const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
     alert(
-      "Голосовой ввод не поддерживается этим браузером."
+      t("noVoice")
     );
     return;
   }
@@ -670,20 +1045,22 @@ function startVoice() {
   recognition =
     new SpeechRecognition();
   recognition.lang =
-    "ru-RU";
+    currentLanguage;
   recognition.continuous =
     false;
   recognition.interimResults =
     false;
+  recognition.maxAlternatives =
+    1;
   recognition.onstart =
     function() {
       voiceButton.classList.add(
         "listening"
       );
       voiceButton.textContent =
-        "🔴 Слушаю тебя...";
+        t("listening");
       statusText.textContent =
-        "Говори...";
+        t("speaking");
     };
   recognition.onresult =
     function(event) {
@@ -696,7 +1073,7 @@ function startVoice() {
         "listening"
       );
       voiceButton.textContent =
-        "🎙️ Говорить с Зеей";
+        t("voice");
       statusText.textContent =
         "";
       recognition.stop();
@@ -713,9 +1090,9 @@ function startVoice() {
         "listening"
       );
       voiceButton.textContent =
-        "🎙️ Говорить с Зеей";
+        t("voice");
       statusText.textContent =
-        "Не удалось услышать голос";
+        t("micError");
       recognition = null;
     };
   recognition.onend =
@@ -724,22 +1101,107 @@ function startVoice() {
         "listening"
       );
       voiceButton.textContent =
-        "🎙️ Говорить с Зеей";
+        t("voice");
       recognition = null;
     };
-  recognition.start();
+  try {
+    recognition.start();
+  } catch (error) {
+    console.error(error);
+    recognition = null;
+  }
 }
-/* ОЗВУЧКА */
+/* =========================
+   ПОЛУЧЕНИЕ ГОЛОСОВ
+========================= */
+function getVoices() {
+  if (
+    !window.speechSynthesis
+  ) {
+    return [];
+  }
+  return window.speechSynthesis
+    .getVoices();
+}
+/* =========================
+   ПОИСК ЖЕНСКОГО ГОЛОСА
+========================= */
+function findFemaleVoice(
+  voices,
+  language
+) {
+  const lang =
+    language
+      .toLowerCase()
+      .split("-")[0];
+  const sameLanguage =
+    voices.filter(
+      voice =>
+        voice.lang
+          .toLowerCase()
+          .startsWith(lang)
+    );
+  if (
+    sameLanguage.length === 0
+  ) {
+    return null;
+  }
+  const femaleKeywords = [
+    "female",
+    "woman",
+    "girl",
+    "жен",
+    "milena",
+    "alena",
+    "elena",
+    "anna",
+    "katya",
+    "irina",
+    "yuna",
+    "zira",
+    "samantha",
+    "victoria",
+    "zira",
+    "susan",
+    "hazel",
+    "amelie",
+    "google français",
+    "google español",
+    "google italiano"
+  ];
+  const female =
+    sameLanguage.find(
+      voice => {
+        const name =
+          voice.name
+            .toLowerCase();
+        return femaleKeywords
+          .some(
+            keyword =>
+              name.includes(keyword)
+          );
+      }
+    );
+  return (
+    female ||
+    sameLanguage[0]
+  );
+}
+/* =========================
+   ОЗВУЧИВАНИЕ
+========================= */
 function speakLastAnswer() {
   if (!lastAnswer) {
     alert(
-      "Пока нечего озвучивать."
+      t("noAnswer")
     );
     return;
   }
-  if (!window.speechSynthesis) {
+  if (
+    !window.speechSynthesis
+  ) {
     alert(
-      "Озвучивание не поддерживается."
+      t("noSpeech")
     );
     return;
   }
@@ -749,78 +1211,54 @@ function speakLastAnswer() {
       lastAnswer
     );
   speech.lang =
-    "ru-RU";
+    currentLanguage;
+  const voices =
+    getVoices();
+  const femaleVoice =
+    findFemaleVoice(
+      voices,
+      currentLanguage
+    );
+  if (femaleVoice) {
+    speech.voice =
+      femaleVoice;
+  }
   speech.rate =
     0.95;
   speech.pitch =
-    1.15;
-  /*
-    Браузер выбирает доступный
-    русский голос.
-    Если на устройстве есть
-    женский русский голос,
-    стараемся выбрать его.
-  */
-  function selectFemaleVoice() {
-    const voices =
-      window.speechSynthesis
-        .getVoices();
-    const femaleVoice =
-      voices.find(
-        voice =>
-          voice.lang
-            .toLowerCase()
-            .startsWith("ru") &&
-          (
-            voice.name
-              .toLowerCase()
-              .includes("female") ||
-            voice.name
-              .toLowerCase()
-              .includes("жен") ||
-            voice.name
-              .toLowerCase()
-              .includes("milena") ||
-            voice.name
-              .toLowerCase()
-              .includes("alena") ||
-            voice.name
-              .toLowerCase()
-              .includes("yuri")
-          )
-      );
-    if (femaleVoice) {
-      speech.voice =
-        femaleVoice;
-    }
-    window.speechSynthesis
-      .speak(speech);
-  }
-  /*
-    На некоторых телефонах
-    голоса загружаются
-    с небольшой задержкой.
-  */
-  const voices =
-    window.speechSynthesis
-      .getVoices();
-  if (voices.length) {
-    selectFemaleVoice();
-  } else {
-    window.speechSynthesis
-      .addEventListener(
-        "voiceschanged",
-        selectFemaleVoice,
-        { once: true }
-      );
-  }
+    1.12;
+  speech.volume =
+    1;
+  window.speechSynthesis.speak(
+    speech
+  );
 }
-/* ОЧИСТКА ПАМЯТИ */
+/* =========================
+   ЗАГРУЗКА ГОЛОСОВ
+========================= */
+if (
+  window.speechSynthesis
+) {
+  window.speechSynthesis
+    .addEventListener(
+      "voiceschanged",
+      function() {
+        getVoices();
+      }
+    );
+}
+/* =========================
+   ОЧИСТКА ПАМЯТИ
+========================= */
 function clearChat() {
-  window.speechSynthesis.cancel();
+  if (
+    window.speechSynthesis
+  ) {
+    window.speechSynthesis.cancel();
+  }
   memory = [];
   localStorage.removeItem(
-    "teoman_memory"
+    "zeya_memory"
   );
   lastAnswer = "";
   chat.innerHTML = "";
@@ -828,13 +1266,31 @@ function clearChat() {
     typing
   );
   addMessage(
-    "Чат очищен 🧹\nЯ снова готова тебя слушать!",
+    t("cleared"),
     "bot"
   );
   statusText.textContent =
-    "Память очищена";
+    t("memoryCleared");
 }
-/* ФОКУС */
+/* =========================
+   ВЫБОР ЯЗЫКА
+========================= */
+languageSelect.addEventListener(
+  "change",
+  function() {
+    setLanguage(
+      this.value
+    );
+    loadMemory();
+    statusText.textContent =
+      t("ready");
+  }
+);
+/* =========================
+   ЗАПУСК
+========================= */
+updateInterface();
+loadMemory();
 input.focus();
 </script>
 </body>
