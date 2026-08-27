@@ -2,63 +2,67 @@ import os
 import json
 import urllib.request
 import urllib.error
+
 from http.server import BaseHTTPRequestHandler
 
 
 OPENAI_URL = "https://api.openai.com/v1/responses"
 
 
-def openai_request(message, image=None):
+def ask_openai(message, image=None):
     api_key = os.environ.get("OPENAI_API_KEY")
 
     if not api_key:
         raise Exception("OPENAI_API_KEY не найден в Vercel.")
 
+
+    content = [
+        {
+            "type": "input_text",
+            "text": message
+        }
+    ]
+
+
+    # Если пользователь отправил изображение
     if image:
-        content = [
-            {
-                "type": "input_text",
-                "text": message
-            },
+        content.append(
             {
                 "type": "input_image",
                 "image_url": image
             }
-        ]
+        )
 
-        payload = {
-            "model": "gpt-5-mini",
-            "instructions": (
-                "Ты — Зея, личный AI-помощник. "
-                "Тебя зовут Зея. "
-                "Не называй себя Теоманом. "
-                "Отвечай естественно и дружелюбно. "
-                "Отвечай на языке пользователя. "
-                "Если пользователь пишет по-русски — отвечай по-русски."
-            ),
-            "input": [
-                {
-                    "role": "user",
-                    "content": content
-                }
-            ]
-        }
 
-    else:
-        payload = {
-            "model": "gpt-5-mini",
-            "instructions": (
-                "Ты — Зея, личный AI-помощник. "
-                "Тебя зовут Зея. "
-                "Никогда не называй себя Теоманом. "
-                "Общайся дружелюбно, естественно и коротко. "
-                "Пользователь может обращаться к тебе «бро». "
-                "Отвечай на языке пользователя."
-            ),
-            "input": message
-        }
+    payload = {
+        "model": "gpt-5-mini",
+
+        "instructions": """
+Ты — Зея 🤖, личный AI-помощник пользователя.
+
+Отвечай на русском языке, если пользователь пишет по-русски.
+
+Будь дружелюбной, умной и понятной.
+Помогай с программированием, учёбой, повседневными задачами,
+анализом изображений и другими вопросами.
+
+Не говори, что ты настоящий человек.
+Если не знаешь ответ — честно скажи об этом.
+""",
+
+        "input": [
+            {
+                "role": "user",
+                "content": content
+            }
+        ],
+
+        "max_output_tokens": 1000
+    }
+
 
     data = json.dumps(payload).encode("utf-8")
+
 
     request = urllib.request.Request(
         OPENAI_URL,
@@ -66,46 +70,50 @@ def openai_request(message, image=None):
         method="POST",
         headers={
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + api_key
+            "Authorization": f"Bearer {api_key}"
         }
     )
+
 
     try:
         with urllib.request.urlopen(request, timeout=60) as response:
             result = json.loads(response.read().decode("utf-8"))
 
-    except urllib.error.HTTPError as e:
-        error_body = e.read().decode("utf-8")
+    except urllib.error.HTTPError as error:
+        error_body = error.read().decode("utf-8")
 
         try:
             error_json = json.loads(error_body)
-            error_message = (
-                error_json.get("error", {}).get("message")
-                or error_body
+            error_message = error_json.get("error", {}).get(
+                "message",
+                error_body
             )
         except Exception:
             error_message = error_body
 
-        raise Exception(error_message)
+        raise Exception(
+            f"OpenAI API ошибка {error.code}: {error_message}"
+        )
 
-    output_text = result.get("output_text")
+    except Exception as error:
+        raise Exception(
+            f"Ошибка соединения с OpenAI: {str(error)}"
+        )
 
-    if output_text:
-        return output_text
 
-    # Запасной вариант, если output_text отсутствует
-    for item in result.get("output", []):
-        for content_item in item.get("content", []):
-            if content_item.get("type") == "output_text":
-                return content_item.get("text", "")
+    # Responses API возвращает готовый текст в output_text
+    answer = result.get("output_text")
 
-    return "Я не смогла получить ответ."
+    if not answer:
+        raise Exception("OpenAI не вернул текстовый ответ.")
+
+    return answer
 
 
 class handler(BaseHTTPRequestHandler):
 
     def send_json(self, status, data):
-        body = json.dumps(
+        response = json.dumps(
             data,
             ensure_ascii=False
         ).encode("utf-8")
@@ -132,82 +140,95 @@ class handler(BaseHTTPRequestHandler):
             "Content-Type"
         )
 
+        self.end_headers()
+
+        self.wfile.write(response)
+
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+
         self.send_header(
-            "Content-Length",
-            str(len(body))
+            "Access-Control-Allow-Origin",
+            "*"
+        )
+
+        self.send_header(
+            "Access-Control-Allow-Methods",
+            "POST, OPTIONS"
+        )
+
+        self.send_header(
+            "Access-Control-Allow-Headers",
+            "Content-Type"
         )
 
         self.end_headers()
-        self.wfile.write(body)
 
-    def do_OPTIONS(self):
-        self.send_json(
-            200,
-            {"ok": True}
-        )
-
-    def do_GET(self):
-        self.send_json(
-            200,
-            {
-                "ok": True,
-                "message": "Зея API работает 🤖"
-            }
-        )
 
     def do_POST(self):
 
         try:
             content_length = int(
-                self.headers.get(
-                    "Content-Length",
-                    "0"
-                )
+                self.headers.get("Content-Length", 0)
             )
 
-            body = self.rfile.read(
-                content_length
-            )
+            body = self.rfile.read(content_length)
 
             data = json.loads(
                 body.decode("utf-8")
             )
 
-            message = str(
-                data.get("message", "")
-            ).strip()
 
+            message = data.get("message", "").strip()
             image = data.get("image")
 
-            if not message:
+
+            if not message and not image:
                 self.send_json(
                     400,
                     {
+                        "ok": False,
                         "error": "Сообщение пустое."
                     }
                 )
                 return
 
-            answer = openai_request(
+
+            if not message:
+                message = "Проанализируй это изображение."
+
+
+            answer = ask_openai(
                 message,
                 image
             )
 
+
             self.send_json(
                 200,
                 {
-                    "reply": answer,
-                    "response": answer,
-                    "message": answer
+                    "ok": True,
+                    "answer": answer
                 }
             )
 
-        except Exception as e:
 
+        except json.JSONDecodeError:
+            self.send_json(
+                400,
+                {
+                    "ok": False,
+                    "error": "Неверный JSON."
+                }
+            )
+
+
+        except Exception as error:
             self.send_json(
                 500,
                 {
-                    "error": "Ошибка API Зеи.",
-                    "details": str(e)
+                    "ok": False,
+                    "error": str(error)
                 }
             )
