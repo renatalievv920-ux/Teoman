@@ -736,14 +736,14 @@ let recognition = null;
 ========================= */
 
 let memory = JSON.parse(
-  localStorage.getItem("teoman_memory") || "[]"
+  localStorage.getItem("zeya_memory") || "[]"
 );
 
 
 function saveMemory() {
 
   localStorage.setItem(
-    "teoman_memory",
+    "zeya_memory",
     JSON.stringify(memory)
   );
 
@@ -1247,7 +1247,7 @@ function clearChat() {
 
 
   localStorage.removeItem(
-    "teoman_memory"
+    "zeya_memory"
   );
 
 
