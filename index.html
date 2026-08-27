@@ -1182,22 +1182,49 @@ function speakLastAnswer() {
   window.speechSynthesis.cancel();
 
 
+function speakLastAnswer() {
+
+  if (!lastAnswer) {
+    alert("Пока нечего озвучивать.");
+    return;
+  }
+
+  if (!window.speechSynthesis) {
+    alert("Озвучивание не поддерживается.");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
   const speech =
-    new SpeechSynthesisUtterance(
-      lastAnswer
+    new SpeechSynthesisUtterance(lastAnswer);
+
+  speech.lang = "ru-RU";
+
+  // Женский голос
+  const voices =
+    window.speechSynthesis.getVoices();
+
+  const femaleVoice =
+    voices.find(voice =>
+      voice.lang.toLowerCase().startsWith("ru") &&
+      (
+        voice.name.toLowerCase().includes("female") ||
+        voice.name.toLowerCase().includes("жен") ||
+        voice.name.toLowerCase().includes("milena") ||
+        voice.name.toLowerCase().includes("alena")
+      )
     );
 
+  if (femaleVoice) {
+    speech.voice = femaleVoice;
+  }
 
-  speech.lang =
-    "ru-RU";
+  speech.rate = 0.95;
+  speech.pitch = 1.15;
 
-
-  speech.rate =
-    1;
-
-
-  speech.pitch =
-    1;
+  window.speechSynthesis.speak(speech);
+}
 
 
   window.speechSynthesis.speak(
