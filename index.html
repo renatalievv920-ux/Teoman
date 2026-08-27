@@ -9,8 +9,6 @@
       viewport-fit=cover">
 
 <meta name="theme-color" content="#0b1020">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <title>Зея — AI Assistant</title>
 
@@ -36,9 +34,9 @@ body {
     background:
         radial-gradient(
             circle at top,
-            #293b68 0%,
-            #111827 42%,
-            #05070d 100%
+            #293b68,
+            #111827 45%,
+            #05070d
         );
 
     display: flex;
@@ -55,12 +53,12 @@ body {
 
     border-radius: 32px;
 
-    background: rgba(10, 17, 35, 0.90);
+    background: rgba(10,17,35,.92);
 
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,.12);
 
     box-shadow:
-        0 25px 80px rgba(0,0,0,0.55);
+        0 25px 80px rgba(0,0,0,.55);
 
     backdrop-filter: blur(25px);
 
@@ -68,7 +66,7 @@ body {
     flex-direction: column;
 }
 
-/* LOGO */
+/* ЗАГОЛОВОК */
 
 .header {
     text-align: center;
@@ -78,7 +76,7 @@ body {
     width: 90px;
     height: 90px;
 
-    margin: 0 auto;
+    margin: auto;
 
     border-radius: 50%;
 
@@ -96,12 +94,11 @@ body {
         );
 
     box-shadow:
-        0 0 40px rgba(96,165,250,0.45);
+        0 0 40px rgba(96,165,250,.45);
 }
 
 h1 {
     margin: 14px 0 4px;
-
     font-size: 32px;
 }
 
@@ -110,7 +107,7 @@ h1 {
     font-size: 14px;
 }
 
-/* CHAT */
+/* ЧАТ */
 
 .chat {
     flex: 1;
@@ -143,85 +140,30 @@ h1 {
     margin-right: auto;
 
     background:
-        rgba(65, 105, 170, 0.24);
+        rgba(65,105,170,.24);
 
     border:
-        1px solid rgba(96,165,250,0.25);
+        1px solid rgba(96,165,250,.25);
 }
 
 .message.user {
     margin-left: auto;
 
     background:
-        rgba(124,58,237,0.30);
+        rgba(124,58,237,.30);
 }
 
-/* PHOTO */
-
-.photo-box {
-    display: none;
-
-    margin: 10px 0 15px;
-
-    text-align: center;
-}
-
-#preview {
-    width: 100%;
-    max-height: 330px;
-
-    object-fit: contain;
-
-    border-radius: 22px;
-
-    background: #000;
-}
-
-.photo-buttons {
-    display: flex;
-
-    gap: 10px;
-
-    margin-top: 10px;
-}
-
-.small-button {
-    flex: 1;
-
-    padding: 14px;
-
-    border: none;
-
-    border-radius: 17px;
-
-    color: white;
-
-    background: #273449;
-
-    font-size: 15px;
-}
-
-.delete-button {
-    background: #7f1d1d;
-}
-
-/* BUTTONS */
+/* КНОПКИ */
 
 button {
     font-family: inherit;
-
     color: white;
-
     cursor: pointer;
-
     -webkit-tap-highlight-color: transparent;
-
-    transition: transform 0.15s,
-                filter 0.15s;
 }
 
 button:active {
-    transform: scale(0.96);
+    transform: scale(.96);
 }
 
 .camera-button {
@@ -243,9 +185,24 @@ button:active {
             #2563eb,
             #7c3aed
         );
+}
 
-    box-shadow:
-        0 10px 30px rgba(37,99,235,0.30);
+.voice-enable {
+    width: 100%;
+
+    padding: 13px;
+
+    margin-bottom: 10px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background: #172033;
+
+    color: #cbd5e1;
+
+    font-size: 15px;
 }
 
 .voice-button {
@@ -258,47 +215,69 @@ button:active {
     font-size: 17px;
 
     border:
-        1px solid rgba(255,255,255,0.10);
+        1px solid rgba(255,255,255,.1);
 
     background: #202b3d;
 }
 
 .voice-button.active {
     background: #b91c1c;
-
-    animation: listening 1s infinite;
 }
 
 .voice-button.speaking {
     background: #166534;
 }
 
-.voice-enable {
+/* ФОТО */
+
+#cameraInput {
+    display: none;
+}
+
+.photo-box {
+    display: none;
+
+    margin: 10px 0 15px;
+
+    text-align: center;
+}
+
+#preview {
     width: 100%;
+    max-height: 330px;
 
-    margin-bottom: 10px;
+    object-fit: contain;
 
-    padding: 12px;
+    border-radius: 22px;
+
+    background: black;
+}
+
+.photo-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.small-button {
+    flex: 1;
+
+    padding: 14px;
 
     border: none;
 
-    border-radius: 15px;
+    border-radius: 17px;
+
+    background: #273449;
 
     font-size: 15px;
-
-    background: #172033;
-
-    color: #cbd5e1;
 }
 
-@keyframes listening {
-    50% {
-        box-shadow:
-            0 0 25px rgba(239,68,68,0.55);
-    }
+.delete-button {
+    background: #7f1d1d;
 }
 
-/* INPUT */
+/* ВВОД */
 
 .input-row {
     display: flex;
@@ -318,7 +297,7 @@ input {
     border-radius: 18px;
 
     border:
-        1px solid rgba(255,255,255,0.10);
+        1px solid rgba(255,255,255,.1);
 
     outline: none;
 
@@ -345,24 +324,19 @@ input::placeholder {
     font-size: 23px;
 }
 
-#cameraInput {
-    display: none;
-}
-
-.analyzing {
+.thinking {
     color: #93c5fd;
 
-    animation:
-        pulse 1s infinite;
+    animation: pulse 1s infinite;
 }
 
 @keyframes pulse {
     50% {
-        opacity: 0.4;
+        opacity: .4;
     }
 }
 
-@media (max-width: 420px) {
+@media (max-width:420px) {
 
     body {
         padding: 0;
@@ -370,9 +344,7 @@ input::placeholder {
 
     .app {
         min-height: 100vh;
-
         border-radius: 0;
-
         border: none;
     }
 }
@@ -383,7 +355,7 @@ input::placeholder {
 
 <div class="app">
 
-    <!-- HEADER -->
+    <!-- ЗЕЯ -->
 
     <div class="header">
 
@@ -404,7 +376,7 @@ input::placeholder {
     </div>
 
 
-    <!-- CHAT -->
+    <!-- ЧАТ -->
 
     <div
         class="chat"
@@ -418,7 +390,7 @@ input::placeholder {
     </div>
 
 
-    <!-- PHOTO -->
+    <!-- ФОТО -->
 
     <div
         class="photo-box"
@@ -451,7 +423,7 @@ input::placeholder {
     </div>
 
 
-    <!-- CAMERA -->
+    <!-- КАМЕРА -->
 
     <button
         class="camera-button"
@@ -470,7 +442,7 @@ input::placeholder {
         onchange="photoSelected(event)">
 
 
-    <!-- ENABLE VOICE -->
+    <!-- ГОЛОС -->
 
     <button
         class="voice-enable"
@@ -480,8 +452,6 @@ input::placeholder {
 
     </button>
 
-
-    <!-- MICROPHONE -->
 
     <button
         id="voiceButton"
@@ -493,7 +463,7 @@ input::placeholder {
     </button>
 
 
-    <!-- TEXT -->
+    <!-- ТЕКСТ -->
 
     <div class="input-row">
 
@@ -519,20 +489,22 @@ input::placeholder {
 
 <script>
 
-/* =====================================
+/* ======================================
    ПЕРЕМЕННЫЕ
-===================================== */
+====================================== */
 
 let currentPhoto = null;
 
-let isVoiceEnabled = false;
+let voiceEnabled = false;
+
+let conversation = [];
 
 
-/* =====================================
-   СООБЩЕНИЯ
-===================================== */
+/* ======================================
+   ДОБАВЛЕНИЕ СООБЩЕНИЯ
+====================================== */
 
-function addMessage(text, type = "user") {
+function addMessage(text, type) {
 
     const chat =
         document.getElementById("chat");
@@ -551,7 +523,6 @@ function addMessage(text, type = "user") {
         chat.scrollHeight;
 
 
-    // Зея говорит только свои сообщения
     if (type === "zeia") {
 
         speak(text);
@@ -560,98 +531,80 @@ function addMessage(text, type = "user") {
 }
 
 
-/* =====================================
+/* ======================================
    ГОЛОС ЗЕИ
-===================================== */
+====================================== */
 
 function enableVoice() {
 
     if (!("speechSynthesis" in window)) {
 
         alert(
-            "Голосовая озвучка не поддерживается этим браузером."
+            "Голосовая озвучка не поддерживается."
         );
 
         return;
     }
 
-
-    const test =
+    const speech =
         new SpeechSynthesisUtterance(
             "Голос Зеи включён."
         );
 
-    test.lang = "ru-RU";
-
-    test.rate = 0.95;
-
-    test.pitch = 1.05;
-
-    test.volume = 1;
-
+    speech.lang = "ru-RU";
+    speech.rate = 0.95;
+    speech.pitch = 1.05;
+    speech.volume = 1;
 
     window.speechSynthesis.cancel();
 
-    window.speechSynthesis.speak(test);
+    window.speechSynthesis.speak(speech);
 
-    isVoiceEnabled = true;
+    voiceEnabled = true;
 
-
-    const status =
-        document.getElementById("status");
-
-    status.innerText =
+    document.getElementById("status")
+        .innerText =
         "🔊 Голос Зеи включён";
-
 
     setTimeout(() => {
 
-        status.innerText =
+        document.getElementById("status")
+            .innerText =
             "Твой AI-помощник";
 
-    }, 2500);
+    }, 2000);
 }
 
 
-/* =====================================
-   ОЗВУЧКА
-===================================== */
+/* ======================================
+   ОЗВУЧКА ОТВЕТА
+====================================== */
 
 function speak(text) {
 
-    if (!isVoiceEnabled) {
+    if (!voiceEnabled) {
         return;
     }
-
 
     if (!("speechSynthesis" in window)) {
         return;
     }
 
-
     window.speechSynthesis.cancel();
-
 
     const cleanText =
         text
-        .replace(/<[^>]*>/g, "")
-        .replace(
-            /[\u{1F300}-\u{1FAFF}]/gu,
-            ""
-        )
+        .replace(/[^\p{L}\p{N}\s.,!?;:()\-]/gu, "")
         .trim();
-
 
     if (!cleanText) {
         return;
     }
 
-
     const speech =
         new SpeechSynthesisUtterance(
             cleanText
         );
-
 
     speech.lang = "ru-RU";
 
@@ -661,13 +614,12 @@ function speak(text) {
 
     speech.volume = 1;
 
+    const button =
+        document.getElementById(
+            "voiceButton"
+        );
 
-    speech.onstart = function() {
-
-        const button =
-            document.getElementById(
-                "voiceButton"
-            );
+    speech.onstart = () => {
 
         button.classList.add(
             "speaking"
@@ -675,13 +627,7 @@ function speak(text) {
 
     };
 
-
-    speech.onend = function() {
-
-        const button =
-            document.getElementById(
-                "voiceButton"
-            );
+    speech.onend = () => {
 
         button.classList.remove(
             "speaking"
@@ -689,18 +635,17 @@ function speak(text) {
 
     };
 
-
     window.speechSynthesis.speak(
         speech
     );
 }
 
 
-/* =====================================
-   ОТПРАВКА ТЕКСТА
-===================================== */
+/* ======================================
+   ОТПРАВКА В НАСТОЯЩИЙ API
+====================================== */
 
-function sendMessage() {
+async function sendMessage() {
 
     const input =
         document.getElementById(
@@ -710,46 +655,170 @@ function sendMessage() {
     const text =
         input.value.trim();
 
-
     if (!text) {
         return;
     }
 
+
+    /* Показываем вопрос */
 
     addMessage(
         text,
         "user"
     );
 
-
     input.value = "";
 
 
-    /*
-       ВРЕМЕННЫЙ ОТВЕТ.
+    /* Показываем статус */
 
-       Позже здесь подключим
-       настоящий AI через /api.
-    */
+    const status =
+        document.getElementById(
+            "status"
+        );
 
-    setTimeout(() => {
+    status.innerHTML =
+        '<span class="thinking">' +
+        '🧠 Зея думает...' +
+        '</span>';
+
+
+    try {
+
+        /*
+         * Отправляем сообщение
+         * в твою папку /api
+         */
+
+        const response =
+            await fetch("/api", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    message: text
+
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Ответ API:",
+            data
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                data.details ||
+                "Ошибка API"
+            );
+
+        }
+
+
+        /*
+         * Твой Python API
+         * возвращает reply.
+         */
+
+        const answer =
+            data.reply ||
+            data.response ||
+            data.message;
+
+
+        if (!answer) {
+
+            throw new Error(
+                "API не вернул ответ."
+            );
+
+        }
+
+
+        /* Сохраняем историю */
+
+        conversation.push({
+
+            role: "user",
+
+            content: text
+
+        });
+
+        conversation.push({
+
+            role: "assistant",
+
+            content: answer
+
+        });
+
+
+        status.innerText =
+            "Твой AI-помощник";
+
+
+        /* Настоящий ответ Зеи */
 
         addMessage(
-            "Я тебя услышала 😊",
+            answer,
             "zeia"
         );
 
-    }, 500);
+
+    } catch (error) {
+
+        console.error(
+            "API ERROR:",
+            error
+        );
+
+
+        status.innerText =
+            "Ошибка подключения";
+
+
+        addMessage(
+            "Бро, я не смогла связаться с AI-мозгом 😔 Проверь API и OPENAI_API_KEY.",
+            "zeia"
+        );
+
+
+        setTimeout(() => {
+
+            status.innerText =
+                "Твой AI-помощник";
+
+        }, 3000);
+
+    }
 }
 
 
-/* =====================================
+/* ======================================
    ENTER
-===================================== */
+====================================== */
 
 function handleEnter(event) {
 
     if (event.key === "Enter") {
+
+        event.preventDefault();
 
         sendMessage();
 
@@ -757,165 +826,21 @@ function handleEnter(event) {
 }
 
 
-/* =====================================
-   КАМЕРА
-===================================== */
-
-function openCamera() {
-
-    const input =
-        document.getElementById(
-            "cameraInput"
-        );
-
-    input.click();
-}
-
-
-/* =====================================
-   ФОТО ПОЛУЧЕНО
-===================================== */
-
-function photoSelected(event) {
-
-    const file =
-        event.target.files[0];
-
-
-    if (!file) {
-        return;
-    }
-
-
-    currentPhoto = file;
-
-
-    const imageURL =
-        URL.createObjectURL(file);
-
-
-    const preview =
-        document.getElementById(
-            "preview"
-        );
-
-
-    preview.src =
-        imageURL;
-
-
-    document.getElementById(
-        "photoBox"
-    ).style.display = "block";
-
-
-    addMessage(
-        "📸 Фотография получена. Я готова её посмотреть.",
-        "zeia"
-    );
-}
-
-
-/* =====================================
-   АНАЛИЗ ФОТО
-===================================== */
-
-function analyzePhoto() {
-
-    if (!currentPhoto) {
-
-        addMessage(
-            "Сначала сделай фотографию 📸",
-            "zeia"
-        );
-
-        return;
-    }
-
-
-    const status =
-        document.getElementById(
-            "status"
-        );
-
-
-    status.innerHTML =
-        '<span class="analyzing">' +
-        '🔍 Анализирую фотографию...' +
-        '</span>';
-
-
-    addMessage(
-        "🔍 Сейчас посмотрю на фотографию...",
-        "zeia"
-    );
-
-
-    /*
-       Здесь следующим шагом подключим
-       настоящий анализ изображения.
-
-       Фото будет отправляться в API,
-       после чего Зея сможет рассказать,
-       что находится на изображении.
-    */
-
-
-    setTimeout(() => {
-
-        status.innerText =
-            "Твой AI-помощник";
-
-
-        addMessage(
-            "Фотография у меня есть 👍 Теперь можно подключить настоящий AI-анализ.",
-            "zeia"
-        );
-
-    }, 1500);
-}
-
-
-/* =====================================
-   УДАЛЕНИЕ ФОТО
-===================================== */
-
-function deletePhoto() {
-
-    currentPhoto = null;
-
-
-    document.getElementById(
-        "preview"
-    ).src = "";
-
-
-    document.getElementById(
-        "photoBox"
-    ).style.display = "none";
-
-
-    document.getElementById(
-        "cameraInput"
-    ).value = "";
-}
-
-
-/* =====================================
-   ГОЛОСОВОЕ РАСПОЗНАВАНИЕ
-===================================== */
+/* ======================================
+   ГОЛОСОВОЙ ВВОД
+====================================== */
 
 function startVoice() {
 
-    const SpeechRecognition =
+    const Recognition =
         window.SpeechRecognition ||
         window.webkitSpeechRecognition;
 
 
-    if (!SpeechRecognition) {
+    if (!Recognition) {
 
         addMessage(
-            "Голосовое распознавание не поддерживается этим браузером.",
+            "Голосовой ввод не поддерживается этим браузером.",
             "zeia"
         );
 
@@ -924,16 +849,14 @@ function startVoice() {
 
 
     const recognition =
-        new SpeechRecognition();
+        new Recognition();
 
 
     recognition.lang =
         "ru-RU";
 
-
     recognition.continuous =
         false;
-
 
     recognition.interimResults =
         false;
@@ -948,7 +871,6 @@ function startVoice() {
     button.classList.add(
         "active"
     );
-
 
     button.innerText =
         "🔴 Слушаю тебя...";
@@ -965,25 +887,21 @@ function startVoice() {
                 .transcript;
 
 
-            addMessage(
-                text,
-                "user"
-            );
+            /*
+             * Показываем распознанный текст
+             */
+
+            document.getElementById(
+                "textInput"
+            ).value = text;
 
 
             /*
-               Пока простой ответ.
-               Потом подключим настоящий AI.
-            */
+             * Отправляем его
+             * настоящему AI
+             */
 
-            setTimeout(() => {
-
-                addMessage(
-                    "Да, я тебя слышу 😊",
-                    "zeia"
-                );
-
-            }, 400);
+            sendMessage();
 
         };
 
@@ -992,13 +910,13 @@ function startVoice() {
         function(event) {
 
             console.log(
-                "Ошибка:",
+                "Voice error:",
                 event.error
             );
 
 
             addMessage(
-                "Я не смогла тебя услышать. Попробуй ещё раз 🎙️",
+                "Я не смогла тебя услышать 🎙️ Попробуй ещё раз.",
                 "zeia"
             );
 
@@ -1012,11 +930,131 @@ function startVoice() {
                 "active"
             );
 
-
             button.innerText =
                 "🎙️ Говорить с Зеей";
 
         };
+}
+
+
+/* ======================================
+   КАМЕРА
+====================================== */
+
+function openCamera() {
+
+    document
+        .getElementById(
+            "cameraInput"
+        )
+        .click();
+
+}
+
+
+/* ======================================
+   ФОТО
+====================================== */
+
+function photoSelected(event) {
+
+    const file =
+        event.target.files[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    currentPhoto =
+        file;
+
+
+    const url =
+        URL.createObjectURL(
+            file
+        );
+
+
+    document
+        .getElementById(
+            "preview"
+        )
+        .src = url;
+
+
+    document
+        .getElementById(
+            "photoBox"
+        )
+        .style.display =
+        "block";
+
+
+    addMessage(
+        "📸 Фото получено. Я готова его посмотреть.",
+        "zeia"
+    );
+}
+
+
+/* ======================================
+   АНАЛИЗ ФОТО
+====================================== */
+
+function analyzePhoto() {
+
+    if (!currentPhoto) {
+
+        addMessage(
+            "Сначала сделай фотографию 📸",
+            "zeia"
+        );
+
+        return;
+    }
+
+
+    addMessage(
+        "🔍 Фото получено. Сейчас подключим настоящий анализ изображения.",
+        "zeia"
+    );
+
+}
+
+
+/* ======================================
+   УДАЛИТЬ ФОТО
+====================================== */
+
+function deletePhoto() {
+
+    currentPhoto =
+        null;
+
+
+    document
+        .getElementById(
+            "preview"
+        )
+        .src = "";
+
+
+    document
+        .getElementById(
+            "photoBox"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "cameraInput"
+        )
+        .value = "";
+
 }
 
 </script>
