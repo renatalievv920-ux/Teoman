@@ -6,241 +6,164 @@
 <title>Теоман</title>
 <style>
 * {
-    box-sizing: border-box;
-}
-
-:root {
-    --bg: #070b14;
-    --card: #101827;
-    --card2: #172236;
-    --border: #273652;
-    --text: #f7f9ff;
-    --muted: #8f9bb3;
-    --blue: #4f7cff;
-    --blue2: #315fe8;
-    --green: #48d17a;
-    --purple: #8757ff;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-        radial-gradient(circle at 50% -10%, #203d78 0%, transparent 38%),
-        linear-gradient(180deg, #070b14 0%, #0b1120 100%);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-                 "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, #172b55 0%, #080d1b 45%, #050812 100%);
+  color: white;
+  font-family: Arial, sans-serif;
 }
 
 .container {
-    width: min(900px, 100%);
-    margin: auto;
-    padding: 24px 18px 45px;
+  width: 100%;
+  max-width: 850px;
+  margin: auto;
+  padding: 22px 18px 40px;
 }
 
 .header {
-    text-align: center;
-    padding: 28px 10px 22px;
+  text-align: center;
+  margin-bottom: 22px;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: clamp(30px, 8vw, 52px);
-    font-weight: 800;
-    letter-spacing: -1.5px;
+.header-title {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .online {
-    color: var(--green);
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 9px;
+  color: #55e58a;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .chat {
-    background: rgba(16, 24, 39, .88);
-    border: 1px solid var(--border);
-    border-radius: 30px;
-    padding: 18px;
-    min-height: 480px;
-    max-height: 62vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,.35);
-    backdrop-filter: blur(18px);
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(100, 130, 190, 0.35);
+  border-radius: 28px;
+  padding: 20px;
+  min-height: 430px;
+  max-height: 60vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  backdrop-filter: blur(15px);
 }
 
 .message {
-    padding: 15px 18px;
-    border-radius: 22px;
-    margin: 12px 0;
-    max-width: 88%;
-    font-size: 18px;
-    line-height: 1.5;
-    white-space: pre-wrap;
-    animation: messageIn .25s ease;
+  padding: 15px 18px;
+  border-radius: 22px;
+  margin: 12px 0;
+  max-width: 90%;
+  font-size: 18px;
+  line-height: 1.45;
+  white-space: pre-wrap;
 }
 
 .user {
-    background: linear-gradient(135deg, var(--blue), var(--blue2));
-    margin-left: auto;
-    border-bottom-right-radius: 7px;
-    box-shadow: 0 8px 25px rgba(63,102,235,.22);
+  background: linear-gradient(135deg, #4169e1, #5b7cff);
+  margin-left: auto;
 }
 
 .bot {
-    background: var(--card2);
-    margin-right: auto;
-    border-bottom-left-radius: 7px;
+  background: #182238;
+  border: 1px solid #293858;
 }
 
-.input-area {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
+.input-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
 }
 
-input,
-textarea {
-    flex: 1;
-    min-width: 0;
-    background: rgba(16, 24, 39, .95);
-    color: white;
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    padding: 17px 19px;
-    font-size: 17px;
-    outline: none;
-    transition: .2s;
+input {
+  flex: 1;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid #304267;
+  background: rgba(15, 23, 42, .9);
+  color: white;
+  font-size: 18px;
+  outline: none;
 }
 
-input:focus,
-textarea:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(79,124,255,.12);
-}
-
-button {
-    border: 0;
-    color: white;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform .15s, filter .15s;
-}
-
-button:active {
-    transform: scale(.97);
+input:focus {
+  border-color: #5b7cff;
+  box-shadow: 0 0 20px rgba(91,124,255,.2);
 }
 
 .send {
-    width: 58px;
-    height: 58px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #5b83ff, #315fe8);
-    font-size: 25px;
+  width: 64px;
+  border: none;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #4169e1, #5b7cff);
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
 }
 
-.controls {
-    display: grid;
-    gap: 12px;
-    margin-top: 18px;
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
 }
 
-.controls button {
-    width: 100%;
-    min-height: 64px;
-    border-radius: 22px;
-    font-size: 19px;
+button {
+  border: none;
+  border-radius: 20px;
+  padding: 17px 20px;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s, opacity .15s;
+}
+
+button:active {
+  transform: scale(.97);
 }
 
 .voice {
-    background: linear-gradient(135deg, #54c96c, #3ba957);
+  background: linear-gradient(135deg, #48b85a, #69cf5d);
 }
 
 .speak {
-    background: linear-gradient(135deg, #8b55ff, #5b2dd8);
+  background: linear-gradient(135deg, #6336df, #814cff);
 }
 
 .clear {
-    background: #202c42;
-    color: #dbe3f4;
-}
-
-.status {
-    text-align: center;
-    color: var(--muted);
-    font-size: 14px;
-    margin: 12px 0;
-}
-
-.typing {
-    display: inline-flex;
-    gap: 5px;
-    padding: 15px 18px;
-    background: var(--card2);
-    border-radius: 20px;
-}
-
-.typing span {
-    width: 7px;
-    height: 7px;
-    background: #9aa7bf;
-    border-radius: 50%;
-    animation: bounce 1s infinite;
-}
-
-.typing span:nth-child(2) {
-    animation-delay: .15s;
-}
-
-.typing span:nth-child(3) {
-    animation-delay: .3s;
-}
-
-@keyframes bounce {
-    0%, 60%, 100% {
-        transform: translateY(0);
-    }
-    30% {
-        transform: translateY(-5px);
-    }
-}
-
-@keyframes messageIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  background: #29354d;
 }
 
 @media (max-width: 600px) {
-    .container {
-        padding: 12px 12px 30px;
-    }
+  .container {
+    padding: 18px 12px 30px;
+  }
 
-    .header {
-        padding: 20px 5px 16px;
-    }
+  .header-title {
+    font-size: 27px;
+  }
 
-    .chat {
-        min-height: 52vh;
-        border-radius: 25px;
-        padding: 13px;
-    }
+  .chat {
+    min-height: 500px;
+    border-radius: 24px;
+    padding: 14px;
+  }
 
-    .message {
-        font-size: 17px;
-        max-width: 92%;
-    }
+  .message {
+    font-size: 17px;
+  }
 
-    .controls button {
-        min-height: 60px;
-        font-size: 18px;
-    }
+  button {
+    width: 100%;
+    padding: 18px;
+  }
 }
 </style>
 </head>
