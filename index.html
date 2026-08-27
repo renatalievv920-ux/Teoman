@@ -1,717 +1,551 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b1020">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Зея — AI-помощник</title>
 
-<title>Зея — AI-помощник</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<style>
-* {
-    box-sizing: border-box;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #26396b 0%, #0b1124 45%, #050812 100%);
+      color: white;
+      padding: 20px 14px;
+    }
 
-body {
-    margin: 0;
-    min-height: 100vh;
-    padding: 15px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-    color: white;
-    background: #050914;
-}
+    .app {
+      max-width: 650px;
+      margin: auto;
+    }
 
-.app {
-    width: 100%;
-    max-width: 600px;
-    min-height: calc(100vh - 30px);
-    margin: auto;
-    padding: 25px;
-    border-radius: 32px;
-    background: #0d1528;
-    border: 1px solid #263653;
-    display: flex;
-    flex-direction: column;
-}
+    .header {
+      text-align: center;
+      padding: 25px 0 20px;
+    }
 
-.header {
-    text-align: center;
-}
+    .avatar {
+      width: 130px;
+      height: 130px;
+      margin: auto;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7198ff, #9b68ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 65px;
+      box-shadow: 0 0 45px rgba(100, 120, 255, .35);
+    }
 
-.logo {
-    width: 105px;
-    height: 105px;
-    margin: auto;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 55px;
-    background: linear-gradient(135deg, #6d8cff, #9b5cff);
-    box-shadow: 0 0 45px rgba(100,120,255,.4);
-}
+    h1 {
+      font-size: 48px;
+      margin: 18px 0 4px;
+    }
 
-h1 {
-    margin: 15px 0 3px;
-    font-size: 38px;
-}
+    .subtitle {
+      color: #aeb7ca;
+      font-size: 22px;
+    }
 
-.status {
-    color: #9ba7bb;
-    font-size: 18px;
-}
+    #chat {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 20px;
+    }
 
-.chat {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px 0;
-}
+    .message {
+      padding: 18px 20px;
+      border-radius: 25px;
+      font-size: 21px;
+      line-height: 1.45;
+      max-width: 90%;
+      white-space: pre-wrap;
+    }
 
-.message {
-    max-width: 88%;
-    margin: 12px 0;
-    padding: 15px 18px;
-    border-radius: 20px;
-    font-size: 18px;
-    line-height: 1.45;
-    white-space: pre-wrap;
-}
+    .zeia {
+      align-self: flex-start;
+      background: #1c2d50;
+      border: 1px solid #31548b;
+    }
 
-.zeia {
-    background: #1b2a48;
-    border: 1px solid #315181;
-    margin-right: auto;
-}
+    .user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #39226f, #332061);
+    }
 
-.user {
-    background: #402a79;
-    margin-left: auto;
-}
+    .buttons {
+      display: grid;
+      gap: 14px;
+      margin-top: 25px;
+    }
 
-button {
-    color: white;
-    border: none;
-    font-family: inherit;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-}
+    button {
+      border: 0;
+      border-radius: 24px;
+      padding: 20px;
+      font-size: 21px;
+      color: white;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-button:active {
-    transform: scale(.97);
-}
+    .camera {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+    }
 
-.camera {
-    width: 100%;
-    padding: 18px;
-    margin-bottom: 12px;
-    border-radius: 20px;
-    font-size: 19px;
-    background: linear-gradient(135deg, #2563eb, #7c3aed);
-}
+    .voice {
+      background: #202b3d;
+      border: 1px solid #3b475c;
+    }
 
-.voice-enable {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 12px;
-    border-radius: 18px;
-    font-size: 17px;
-    background: #202c40;
-}
+    .send {
+      background: #2563eb;
+      width: 70px;
+      padding: 15px;
+      font-size: 30px;
+    }
 
-.voice {
-    width: 100%;
-    padding: 17px;
-    margin-bottom: 12px;
-    border-radius: 20px;
-    font-size: 18px;
-    background: #202c40;
-    border: 1px solid #35445e;
-}
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
 
-.voice.active {
-    background: #991b1b;
-}
+    input {
+      flex: 1;
+      min-width: 0;
+      border-radius: 22px;
+      border: 1px solid #33415c;
+      background: #111a2d;
+      color: white;
+      padding: 18px;
+      font-size: 19px;
+      outline: none;
+    }
 
-#cameraInput {
-    display: none;
-}
+    #photoInput {
+      display: none;
+    }
 
-.photo {
-    display: none;
-    margin-bottom: 15px;
-}
+    #photoPreview {
+      display: none;
+      margin-top: 15px;
+      border-radius: 25px;
+      overflow: hidden;
+      background: #111827;
+    }
 
-.photo img {
-    display: block;
-    width: 100%;
-    max-height: 350px;
-    object-fit: contain;
-    border-radius: 20px;
-    background: black;
-}
+    #photoPreview img {
+      display: block;
+      width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+    }
 
-.photo-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
+    .photo-buttons {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-.photo-buttons button {
-    flex: 1;
-    padding: 14px;
-    border-radius: 16px;
-    background: #26364e;
-    font-size: 16px;
-}
+    .analyze {
+      background: #26364f;
+    }
 
-.photo-buttons .delete {
-    background: #8f2020;
-}
+    .delete {
+      background: #a91f2b;
+    }
 
-.input-row {
-    display: flex;
-    gap: 10px;
-}
+    .status {
+      text-align: center;
+      color: #9da9bd;
+      margin-top: 15px;
+      min-height: 25px;
+    }
 
-input {
-    flex: 1;
-    min-width: 0;
-    padding: 17px;
-    border-radius: 19px;
-    border: 1px solid #33425b;
-    outline: none;
-    background: #0b1222;
-    color: white;
-    font-size: 17px;
-}
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 42px;
+      }
 
-input::placeholder {
-    color: #718096;
-}
+      .subtitle {
+        font-size: 19px;
+      }
 
-.send {
-    width: 62px;
-    border-radius: 19px;
-    background: #2563eb;
-    font-size: 25px;
-}
-</style>
+      .message {
+        font-size: 19px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="app">
 
-    <div class="header">
+  <div class="header">
+    <div class="avatar">🤖</div>
+    <h1>Зея</h1>
+    <div class="subtitle">Твой AI-помощник</div>
+  </div>
 
-        <div class="logo">🤖</div>
-
-        <h1>Зея</h1>
-
-        <div class="status" id="status">
-            Твой AI-помощник
-        </div>
-
+  <div id="chat">
+    <div class="message zeia">
+      Привет! Я Зея 🤖<br>
+      Я готова тебя слушать 😊
     </div>
+  </div>
 
+  <div class="status" id="status"></div>
 
-    <div class="chat" id="chat">
+  <div id="photoPreview">
+    <img id="photo" alt="Фото">
+  </div>
 
-        <div class="message zeia">
-            Привет! Я Зея 🤖
-            Я готова тебя слушать.
-        </div>
+  <div class="photo-buttons" id="photoButtons">
+    <button class="analyze" onclick="analyzePhoto()">
+      🔍 Анализировать
+    </button>
 
-    </div>
+    <button class="delete" onclick="deletePhoto()">
+      🗑️ Удалить
+    </button>
+  </div>
 
-
-    <!-- ФОТО -->
-
-    <div class="photo" id="photoBox">
-
-        <img id="preview" alt="Фото">
-
-        <div class="photo-buttons">
-
-            <button onclick="analyzePhoto()">
-                🔍 Анализировать
-            </button>
-
-            <button class="delete" onclick="deletePhoto()">
-                🗑️ Удалить
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- КАМЕРА -->
+  <div class="buttons">
 
     <button class="camera" onclick="openCamera()">
-        📸 Открыть камеру
+      📸 Открыть камеру
     </button>
 
+    <button class="voice" onclick="toggleVoice()">
+      🔊 Включить голос Зеи
+    </button>
+
+    <button class="voice" onclick="startListening()">
+      🎙️ Говорить с Зеей
+    </button>
+
+  </div>
+
+  <div class="input-row">
     <input
-        id="cameraInput"
-        type="file"
-        accept="image/*"
-        capture="environment"
-        onchange="photoSelected(event)"
+      id="textInput"
+      type="text"
+      placeholder="Напиши Зее..."
+      onkeydown="if(event.key==='Enter') sendMessage()"
     >
 
-
-    <!-- ГОЛОС -->
-
-    <button class="voice-enable" onclick="enableVoice()">
-        🔊 Включить голос Зеи
+    <button class="send" onclick="sendMessage()">
+      ➤
     </button>
+  </div>
 
-    <button
-        class="voice"
-        id="voiceButton"
-        onclick="startVoice()"
-    >
-        🎙️ Говорить с Зеей
-    </button>
-
-
-    <!-- ТЕКСТ -->
-
-    <div class="input-row">
-
-        <input
-            id="textInput"
-            type="text"
-            placeholder="Напиши Зее..."
-            autocomplete="off"
-            onkeydown="handleEnter(event)"
-        >
-
-        <button class="send" onclick="sendMessage()">
-            ➤
-        </button>
-
-    </div>
+  <input
+    id="photoInput"
+    type="file"
+    accept="image/*"
+    capture="environment"
+    onchange="photoSelected(event)"
+  >
 
 </div>
 
-
 <script>
 
-let voiceEnabled = false;
+let voiceEnabled = true;
 let currentPhoto = null;
 
-
-/* =========================
-   СООБЩЕНИЯ
-========================= */
+const chat = document.getElementById("chat");
+const statusEl = document.getElementById("status");
 
 function addMessage(text, type) {
+  const div = document.createElement("div");
 
-    const chat = document.getElementById("chat");
+  div.className = "message " + type;
+  div.textContent = text;
 
-    const message = document.createElement("div");
+  chat.appendChild(div);
 
-    message.className = "message " + type;
-
-    message.textContent = text;
-
-    chat.appendChild(message);
-
-    chat.scrollTop = chat.scrollHeight;
-
-    if (type === "zeia") {
-        speak(text);
-    }
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: "smooth"
+  });
 }
-
-
-/* =========================
-   ГОЛОС
-========================= */
-
-function enableVoice() {
-
-    if (!window.speechSynthesis) {
-
-        addMessage(
-            "Голосовая озвучка не поддерживается.",
-            "zeia"
-        );
-
-        return;
-    }
-
-    voiceEnabled = true;
-
-    const speech =
-        new SpeechSynthesisUtterance(
-            "Голос Зеи включён."
-        );
-
-    speech.lang = "ru-RU";
-    speech.rate = 0.95;
-    speech.pitch = 1.05;
-
-    window.speechSynthesis.cancel();
-
-    window.speechSynthesis.speak(speech);
-
-    document.getElementById("status").textContent =
-        "🔊 Голос включён";
-
-    setTimeout(() => {
-
-        document.getElementById("status").textContent =
-            "Твой AI-помощник";
-
-    }, 2000);
-}
-
 
 function speak(text) {
 
-    if (!voiceEnabled) return;
+  if (!voiceEnabled) return;
 
-    if (!window.speechSynthesis) return;
+  if (!("speechSynthesis" in window)) {
+    console.log("Голос не поддерживается");
+    return;
+  }
 
-    window.speechSynthesis.cancel();
+  window.speechSynthesis.cancel();
 
-    const speech =
-        new SpeechSynthesisUtterance(text);
+  const cleanText = text
+    .replace(/[*#_`]/g, "")
+    .replace(/https?:\/\/\S+/g, "");
 
-    speech.lang = "ru-RU";
-    speech.rate = 0.95;
-    speech.pitch = 1.05;
-    speech.volume = 1;
+  const speech = new SpeechSynthesisUtterance(cleanText);
 
-    window.speechSynthesis.speak(speech);
+  speech.lang = "ru-RU";
+  speech.rate = 0.95;
+  speech.pitch = 1.05;
+  speech.volume = 1;
+
+  window.speechSynthesis.speak(speech);
 }
 
+function toggleVoice() {
 
-/* =========================
-   ОТПРАВКА В API
-========================= */
+  voiceEnabled = !voiceEnabled;
+
+  const buttons = document.querySelectorAll(".voice");
+
+  if (voiceEnabled) {
+    buttons[0].textContent = "🔊 Голос Зеи включён";
+    speak("Голос Зеи включён");
+  } else {
+    buttons[0].textContent = "🔇 Голос Зеи выключен";
+    window.speechSynthesis.cancel();
+  }
+}
 
 async function sendMessage() {
 
-    const input =
-        document.getElementById("textInput");
+  const input = document.getElementById("textInput");
+  const text = input.value.trim();
 
-    const text =
-        input.value.trim();
+  if (!text) return;
 
-    if (!text) return;
+  addMessage(text, "user");
 
+  input.value = "";
 
-    addMessage(text, "user");
+  statusEl.textContent = "🧠 Зея думает...";
 
-    input.value = "";
+  try {
 
+    const response = await fetch("/api", {
+      method: "POST",
 
-    const status =
-        document.getElementById("status");
+      headers: {
+        "Content-Type": "application/json"
+      },
 
-    status.textContent =
-        "🧠 Зея думает...";
+      body: JSON.stringify({
+        message: text
+      })
+    });
 
+    const data = await response.json();
 
-    try {
-
-        const response = await fetch("/api", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                message: text
-            })
-
-        });
-
-
-        const raw =
-            await response.text();
-
-        console.log("API:", raw);
-
-
-        let data;
-
-        try {
-
-            data = JSON.parse(raw);
-
-        } catch {
-
-            throw new Error(
-                "API вернул неправильный ответ"
-            );
-
-        }
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.error ||
-                data.details ||
-                "Ошибка API"
-            );
-
-        }
-
-
-        const answer =
-            data.reply ||
-            data.response ||
-            data.message;
-
-
-        if (!answer) {
-
-            throw new Error(
-                "API не вернул ответ"
-            );
-
-        }
-
-
-        status.textContent =
-            "Твой AI-помощник";
-
-
-        addMessage(
-            answer,
-            "zeia"
-        );
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        status.textContent =
-            "❌ Ошибка API";
-
-        addMessage(
-            "Не получилось подключиться к моему AI-мозгу 😔\n\nОшибка: " +
-            error.message,
-            "zeia"
-        );
-
+    if (!response.ok) {
+      throw new Error(data.error || "Ошибка сервера");
     }
 
+    const answer =
+      data.reply ||
+      data.response ||
+      data.message ||
+      "Я пока не получила ответ.";
+
+    addMessage(answer, "zeia");
+
+    speak(answer);
+
+    statusEl.textContent = "";
+
+  } catch (error) {
+
+    console.error(error);
+
+    const errorText =
+      "Бро, я не смогла связаться с AI-мозгом 😔\n" +
+      "Проверь API и OPENAI_API_KEY.";
+
+    addMessage(errorText, "zeia");
+
+    statusEl.textContent = "";
+  }
 }
-
-
-/* =========================
-   ENTER
-========================= */
-
-function handleEnter(event) {
-
-    if (event.key === "Enter") {
-
-        event.preventDefault();
-
-        sendMessage();
-
-    }
-
-}
-
-
-/* =========================
-   МИКРОФОН
-========================= */
-
-function startVoice() {
-
-    const Recognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-
-
-    if (!Recognition) {
-
-        addMessage(
-            "Голосовой ввод не поддерживается этим браузером.",
-            "zeia"
-        );
-
-        return;
-    }
-
-
-    const recognition =
-        new Recognition();
-
-
-    recognition.lang = "ru-RU";
-
-    recognition.continuous = false;
-
-    recognition.interimResults = false;
-
-
-    const button =
-        document.getElementById("voiceButton");
-
-
-    button.classList.add("active");
-
-    button.textContent =
-        "🔴 Слушаю тебя...";
-
-
-    recognition.start();
-
-
-    recognition.onresult =
-        function(event) {
-
-            const text =
-                event.results[0][0].transcript;
-
-
-            document.getElementById(
-                "textInput"
-            ).value = text;
-
-
-            sendMessage();
-
-        };
-
-
-    recognition.onerror =
-        function(event) {
-
-            console.log(
-                "VOICE ERROR:",
-                event.error
-            );
-
-            addMessage(
-                "Я не смогла тебя услышать 🎙️",
-                "zeia"
-            );
-
-        };
-
-
-    recognition.onend =
-        function() {
-
-            button.classList.remove("active");
-
-            button.textContent =
-                "🎙️ Говорить с Зеей";
-
-        };
-
-}
-
-
-/* =========================
-   КАМЕРА
-========================= */
 
 function openCamera() {
-
-    document
-        .getElementById("cameraInput")
-        .click();
-
+  document.getElementById("photoInput").click();
 }
-
 
 function photoSelected(event) {
 
-    const file =
-        event.target.files[0];
+  const file = event.target.files[0];
 
-    if (!file) return;
+  if (!file) return;
 
+  currentPhoto = file;
 
-    currentPhoto = file;
+  const reader = new FileReader();
 
+  reader.onload = function(e) {
 
-    const url =
-        URL.createObjectURL(file);
+    document.getElementById("photo").src = e.target.result;
 
+    document.getElementById("photoPreview").style.display = "block";
 
-    document
-        .getElementById("preview")
-        .src = url;
-
-
-    document
-        .getElementById("photoBox")
-        .style.display = "block";
-
+    document.getElementById("photoButtons").style.display = "grid";
 
     addMessage(
-        "📸 Фото получено. Я готова его посмотреть.",
-        "zeia"
+      "📸 Фото получено. Я готова его посмотреть.",
+      "zeia"
     );
 
+  };
+
+  reader.readAsDataURL(file);
 }
-
-
-/* =========================
-   АНАЛИЗ ФОТО
-========================= */
-
-function analyzePhoto() {
-
-    if (!currentPhoto) {
-
-        addMessage(
-            "Сначала сделай фотографию 📸",
-            "zeia"
-        );
-
-        return;
-    }
-
-
-    addMessage(
-        "📸 Фото у меня есть. Следующим шагом подключим его к AI для настоящего анализа.",
-        "zeia"
-    );
-
-}
-
-
-/* =========================
-   УДАЛЕНИЕ ФОТО
-========================= */
 
 function deletePhoto() {
 
-    currentPhoto = null;
+  currentPhoto = null;
 
+  document.getElementById("photoInput").value = "";
 
-    document
-        .getElementById("preview")
-        .src = "";
+  document.getElementById("photoPreview").style.display = "none";
 
+  document.getElementById("photoButtons").style.display = "none";
+}
 
-    document
-        .getElementById("photoBox")
-        .style.display = "none";
+async function analyzePhoto() {
 
+  if (!currentPhoto) return;
 
-    document
-        .getElementById("cameraInput")
-        .value = "";
+  statusEl.textContent = "👁️ Зея анализирует фото...";
 
+  try {
+
+    const reader = new FileReader();
+
+    reader.onload = async function() {
+
+      const base64 = reader.result;
+
+      try {
+
+        const response = await fetch("/api", {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            message:
+              "Посмотри на это изображение и подробно опиши, что на нём находится.",
+            image: base64
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Ошибка анализа");
+        }
+
+        const answer =
+          data.reply ||
+          data.response ||
+          data.message ||
+          "Я не смогла описать изображение.";
+
+        addMessage(answer, "zeia");
+
+        speak(answer);
+
+        statusEl.textContent = "";
+
+      } catch (error) {
+
+        console.error(error);
+
+        addMessage(
+          "😔 Не получилось проанализировать фото. Проверь API.",
+          "zeia"
+        );
+
+        statusEl.textContent = "";
+      }
+
+    };
+
+    reader.readAsDataURL(currentPhoto);
+
+  } catch (error) {
+
+    console.error(error);
+
+    statusEl.textContent = "";
+  }
+}
+
+function startListening() {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+
+    addMessage(
+      "🎙️ Бро, голосовой ввод не поддерживается этим браузером.",
+      "zeia"
+    );
+
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  recognition.lang = "ru-RU";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  statusEl.textContent = "🎙️ Я слушаю...";
+
+  recognition.start();
+
+  recognition.onresult = function(event) {
+
+    const text =
+      event.results[0][0].transcript;
+
+    document.getElementById("textInput").value = text;
+
+    statusEl.textContent = "";
+
+    sendMessage();
+  };
+
+  recognition.onerror = function() {
+
+    statusEl.textContent = "";
+
+    addMessage(
+      "😔 Я не услышала тебя. Попробуй ещё раз.",
+      "zeia"
+    );
+  };
+
+  recognition.onend = function() {
+    statusEl.textContent = "";
+  };
 }
 
 </script>
