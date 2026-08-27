@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Теоман</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #111827;
+    color: white;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 25px 18px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 42px;
+    margin: 20px 0 5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #9ca3af;
+    margin-bottom: 30px;
+}
+
+.chat {
+    background: #1f2937;
+    border-radius: 20px;
+    padding: 18px;
+    min-height: 350px;
+    max-height: 55vh;
+    overflow-y: auto;
+}
+
+.message {
+    padding: 13px 16px;
+    border-radius: 15px;
+    margin: 10px 0;
+    line-height: 1.4;
+}
+
+.user {
+    background: #2563eb;
+    margin-left: 30px;
+}
+
+.teoman {
+    background: #374151;
+    margin-right: 30px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+input {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #4b5563;
+    border-radius: 14px;
+    background: #1f2937;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+button {
+    border: none;
+    border-radius: 14px;
+    padding: 14px 18px;
+    background: #2563eb;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+.mic {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+    background: #16a34a;
+}
+
+.status {
+    text-align: center;
+    color: #9ca3af;
+    margin-top: 12px;
+    min-height: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🤖 Теоман</h1>
+    <div class="subtitle">Твой голосовой ИИ-помощник</div>
+
+    <div class="chat" id="chat">
+        <div class="message teoman">
+            Привет! Я Теоман 👋<br>
+            Напиши мне что-нибудь или нажми 🎤 и поговори со мной.
+        </div>
+    </div>
+
+    <div class="controls">
+        <input id="input" placeholder="Напиши Теоману...">
+        <button onclick="sendMessage()">➤</button>
+    </div>
+
+    <button class="mic" onclick="startVoice()">🎤 Говорить с Теоманом</button>
+
+    <div class="status" id="status"></div>
+
+</div>
+
+<script>
+
+const input = document.getElementById("input");
+const chat = document.getElementById("chat");
+const status = document.getElementById("status");
+
+function addMessage(text, type) {
+    const message = document.createElement("div");
+    message.className = "message " + type;
+    message.innerHTML = text;
+    chat.appendChild(message);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function speak(text) {
+    if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+
+        const voice = new SpeechSynthesisUtterance(text);
+        voice.lang = "ru-RU";
+        voice.rate = 1;
+        voice.pitch = 1;
+
+        speechSynthesis.speak(voice);
+    }
+}
+
+function answer(text) {
+
+    const lower = text.toLowerCase();
+
+    let response = "";
+
+    if (lower.includes("привет")) {
+        response = "Привет! Рад тебя слышать 😎";
+    }
+
+    else if (lower.includes("как дела")) {
+        response = "Отлично! Я работаю и готов тебе помогать.";
+    }
+
+    else if (lower.includes("как тебя зовут")) {
+        response = "Меня зовут Теоман.";
+    }
+
+    else if (lower.includes("кто ты")) {
+        response = "Я Теоман — твой голосовой ИИ-помощник.";
+    }
+
+    else if (lower.includes("спасибо")) {
+        response = "Пожалуйста! Обращайся.";
+    }
+
+    else if (lower.includes("пока")) {
+        response = "Пока! Ещё увидимся 👋";
+    }
+
+    else {
+        response = "Я услышал тебя: " + text;
+    }
+
+    setTimeout(() => {
+        addMessage(response, "teoman");
+        speak(response);
+    }, 500);
+}
+
+function sendMessage() {
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage(text, "user");
+
+    input.value = "";
+
+    answer(text);
+}
+
+input.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
+
+function startVoice() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        status.textContent =
+            "❌ Голосовой ввод не поддерживается этим браузером.";
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "ru-RU";
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    status.textContent = "🎤 Слушаю...";
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+
+        const text =
+            event.results[0][0].transcript;
+
+        status.textContent = "✅ Услышал: " + text;
+
+        addMessage(text, "user");
+
+        answer(text);
+    };
+
+    recognition.onerror = function(event) {
+        status.textContent =
+            "❌ Ошибка микрофона: " + event.error;
+    };
+
+    recognition.onend = function() {
+        setTimeout(() => {
+            status.textContent = "";
+        }, 3000);
+    };
+}
+
+</script>
+
+</body>
+</html>
