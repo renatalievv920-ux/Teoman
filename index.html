@@ -3,10 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Зея — AI помощник</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
@@ -77,6 +81,7 @@ h1{
     font-size:18px;
     line-height:1.5;
     white-space:pre-wrap;
+    word-wrap:break-word;
 }
 
 .bot{
@@ -108,6 +113,7 @@ button{
     color:white;
     font-size:18px;
     background:#1b263d;
+    cursor:pointer;
 }
 
 button:active{
@@ -146,6 +152,15 @@ input{
     opacity:.7;
 }
 
+.preview{
+    width:100%;
+    max-height:350px;
+    object-fit:contain;
+    border-radius:20px;
+    margin-top:10px;
+    border:1px solid #31538d;
+}
+
 </style>
 </head>
 
@@ -153,160 +168,275 @@ input{
 
 <div class="app">
 
-<div class="header">
+    <div class="header">
 
-<div class="logo">🤖</div>
+        <div class="logo">
+            🤖
+        </div>
 
-<h1>Зея</h1>
+        <h1>
+            Зея
+        </h1>
 
-<div class="status" id="status">
-Готова помочь ✨
-</div>
+        <div class="status" id="status">
+            Готова помочь ✨
+        </div>
 
-<select id="language" class="language">
+        <select
+            id="language"
+            class="language"
+        >
 
-<option value="ru-RU">🇷🇺 Русский</option>
-<option value="tr-TR">🇹🇷 Türkçe</option>
-<option value="en-US">🇬🇧 English</option>
-<option value="de-DE">🇩🇪 Deutsch</option>
-<option value="fr-FR">🇫🇷 Français</option>
-<option value="es-ES">🇪🇸 Español</option>
-<option value="it-IT">🇮🇹 Italiano</option>
-<option value="ar-SA">🇸🇦 العربية</option>
-<option value="zh-CN">🇨🇳 中文</option>
-<option value="ja-JP">🇯🇵 日本語</option>
+            <option value="ru-RU">
+                🇷🇺 Русский
+            </option>
 
-</select>
+            <option value="tr-TR">
+                🇹🇷 Türkçe
+            </option>
 
-</div>
+            <option value="en-US">
+                🇬🇧 English
+            </option>
+
+            <option value="de-DE">
+                🇩🇪 Deutsch
+            </option>
+
+            <option value="fr-FR">
+                🇫🇷 Français
+            </option>
+
+            <option value="es-ES">
+                🇪🇸 Español
+            </option>
+
+            <option value="it-IT">
+                🇮🇹 Italiano
+            </option>
+
+            <option value="ar-SA">
+                🇸🇦 العربية
+            </option>
+
+            <option value="zh-CN">
+                🇨🇳 中文
+            </option>
+
+            <option value="ja-JP">
+                🇯🇵 日本語
+            </option>
+
+        </select>
+
+    </div>
 
 
-<div class="chat" id="chat">
+    <div
+        class="chat"
+        id="chat"
+    >
 
-<div class="message bot" id="welcome">
-Привет! Я Зея 🤖
-Я готова тебе помочь.
-</div>
+        <div
+            class="message bot"
+            id="welcome"
+        >
+            Привет! Я Зея 🤖
+            Я готова тебе помочь.
+        </div>
 
-</div>
-
-
-<div class="buttons">
-
-<button class="camera" onclick="openCamera()">
-📸 Камера
-</button>
-
-<button onclick="startVoice()">
-🎙️ Говорить с Зеей
-</button>
-
-<button onclick="speakLast()">
-🔊 Голос Зеи
-</button>
-
-</div>
+    </div>
 
 
-<div class="input-area">
+    <div class="buttons">
 
-<input
-id="input"
-type="text"
-placeholder="Напиши Зее..."
-autocomplete="off">
+        <button
+            class="camera"
+            onclick="openCamera()"
+        >
+            📸 Камера
+        </button>
 
-<button class="send" onclick="sendMessage()">
-➤
-</button>
+        <button
+            onclick="startVoice()"
+        >
+            🎙️ Говорить с Зеей
+        </button>
 
-</div>
+        <button
+            onclick="speakLast()"
+        >
+            🔊 Голос Зеи
+        </button>
+
+    </div>
+
+
+    <div class="input-area">
+
+        <input
+            id="input"
+            type="text"
+            placeholder="Напиши Зее..."
+            autocomplete="off"
+        >
+
+        <button
+            class="send"
+            onclick="sendMessage()"
+        >
+            ➤
+        </button>
+
+    </div>
 
 </div>
 
 
 <script>
 
+
+/* =========================
+   API
+========================= */
+
 const API_URL =
-"https://zeya-pi.vercel.app/api/chat";
+    "https://zeya-pi.vercel.app/api/chat";
+
+
+/* =========================
+   ELEMENTS
+========================= */
 
 const input =
-document.getElementById("input");
+    document.getElementById("input");
 
 const chat =
-document.getElementById("chat");
+    document.getElementById("chat");
 
 const statusText =
-document.getElementById("status");
+    document.getElementById("status");
 
 const language =
-document.getElementById("language");
+    document.getElementById("language");
+
+
+/* =========================
+   ПЕРЕМЕННЫЕ
+========================= */
 
 let lastAnswer = "";
 
 
 /* =========================
-   ЯЗЫК
+   ЯЗЫКИ
 ========================= */
 
 const languageNames = {
 
-"ru-RU":"русском",
-"tr-TR":"турецком",
-"en-US":"английском",
-"de-DE":"немецком",
-"fr-FR":"французском",
-"es-ES":"испанском",
-"it-IT":"итальянском",
-"ar-SA":"арабском",
-"zh-CN":"китайском",
-"ja-JP":"японском"
+    "ru-RU":
+        "русском",
+
+    "tr-TR":
+        "турецком",
+
+    "en-US":
+        "английском",
+
+    "de-DE":
+        "немецком",
+
+    "fr-FR":
+        "французском",
+
+    "es-ES":
+        "испанском",
+
+    "it-IT":
+        "итальянском",
+
+    "ar-SA":
+        "арабском",
+
+    "zh-CN":
+        "китайском",
+
+    "ja-JP":
+        "японском"
 
 };
 
 
+/* =========================
+   ИЗМЕНЕНИЕ ЯЗЫКА
+========================= */
+
 language.addEventListener(
-"change",
-function(){
+    "change",
+    function(){
 
-const lang =
-language.value;
+        const lang =
+            language.value;
 
-const name =
-languageNames[lang];
+        const name =
+            languageNames[lang];
 
-addMessage(
-"🌐 Язык изменён. Теперь отвечаю на " +
-name + ".",
-"bot"
+        addMessage(
+            "🌐 Язык изменён. Теперь отвечаю на " +
+            name +
+            ".",
+            "bot"
+        );
+
+        input.placeholder =
+            getPlaceholder(lang);
+
+    }
 );
 
-input.placeholder =
-getPlaceholder(lang);
 
-});
-
+/* =========================
+   PLACEHOLDER
+========================= */
 
 function getPlaceholder(lang){
 
-const placeholders = {
+    const placeholders = {
 
-"ru-RU":"Напиши Зее...",
-"tr-TR":"Zeya'ya yaz...",
-"en-US":"Write to Zeya...",
-"de-DE":"Schreibe Zeya...",
-"fr-FR":"Écris à Zeya...",
-"es-ES":"Escribe a Zeya...",
-"it-IT":"Scrivi a Zeya...",
-"ar-SA":"اكتب إلى زيا...",
-"zh-CN":"给泽娅写消息...",
-"ja-JP":"ゼヤにメッセージ..."
+        "ru-RU":
+            "Напиши Зее...",
 
-};
+        "tr-TR":
+            "Zeya'ya yaz...",
 
-return placeholders[lang] ||
-"Напиши Зее...";
+        "en-US":
+            "Write to Zeya...",
 
+        "de-DE":
+            "Schreibe Zeya...",
+
+        "fr-FR":
+            "Écris à Zeya...",
+
+        "es-ES":
+            "Escribe a Zeya...",
+
+        "it-IT":
+            "Scrivi a Zeya...",
+
+        "ar-SA":
+            "اكتب إلى زيا...",
+
+        "zh-CN":
+            "给泽娅写消息...",
+
+        "ja-JP":
+            "ゼヤにメッセージ..."
+
+    };
+
+    return placeholders[lang] ||
+        "Напиши Зее...";
 }
 
 
@@ -314,196 +444,229 @@ return placeholders[lang] ||
    СООБЩЕНИЯ
 ========================= */
 
-function addMessage(text,type){
+function addMessage(
+    text,
+    type
+){
 
-const div =
-document.createElement("div");
+    const div =
+        document.createElement("div");
 
-div.className =
-"message " + type;
+    div.className =
+        "message " + type;
 
-div.textContent =
-text;
+    div.textContent =
+        text;
 
-chat.appendChild(div);
+    chat.appendChild(div);
 
-window.scrollTo({
-top:document.body.scrollHeight,
-behavior:"smooth"
-});
+    window.scrollTo({
+        top:document.body.scrollHeight,
+        behavior:"smooth"
+    });
 
-return div;
-
+    return div;
 }
 
 
 /* =========================
-   ОТПРАВКА
+   ОБЩИЙ ПРОМПТ
+========================= */
+
+function createPrompt(text){
+
+    const selectedLanguage =
+        language.value;
+
+    const languageName =
+        languageNames[selectedLanguage];
+
+    return (
+
+        "Пользователь выбрал язык: " +
+        languageName +
+        ". " +
+
+        "Отвечай пользователю строго на " +
+        languageName +
+        ". " +
+
+        "Ты — Зея, личный AI-помощник. " +
+
+        "Не называй себя Теоманом. " +
+
+        "Отвечай естественно, дружелюбно и понятно. " +
+
+        "Сообщение пользователя: " +
+        text
+
+    );
+}
+
+
+/* =========================
+   ОТПРАВКА ТЕКСТА
 ========================= */
 
 async function sendMessage(){
 
-const text =
-input.value.trim();
+    const text =
+        input.value.trim();
 
-if(!text)return;
-
-const selectedLanguage =
-language.value;
-
-const languageName =
-languageNames[selectedLanguage];
+    if(!text){
+        return;
+    }
 
 
-addMessage(
-text,
-"user"
-);
-
-input.value="";
-
-statusText.textContent =
-"Зея думает...";
+    const selectedLanguage =
+        language.value;
 
 
-const loading =
-addMessage(
-"Зея печатает...",
-"bot loading"
-);
+    addMessage(
+        text,
+        "user"
+    );
 
 
-try{
-
-const prompt =
-
-"Пользователь выбрал язык: " +
-languageName +
-". " +
-
-"Отвечай пользователю строго на " +
-languageName +
-". " +
-
-"Ты — Зея, личный AI-помощник. " +
-"Не называй себя Теоманом. " +
-
-"Сообщение пользователя: " +
-text;
+    input.value = "";
 
 
-const response =
-await fetch(
-API_URL,
-{
-method:"POST",
-
-headers:{
-"Content-Type":
-"application/json",
-"Accept":
-"application/json"
-},
-
-body:JSON.stringify({
-message:prompt
-})
-
-});
+    statusText.textContent =
+        "Зея думает...";
 
 
-const raw =
-await response.text();
+    const loading =
+        addMessage(
+            "Зея печатает...",
+            "bot loading"
+        );
 
 
-if(!response.ok){
+    try{
 
-throw new Error(
-"Ошибка сервера " +
-response.status +
-": " +
-raw
-);
-
-}
+        const prompt =
+            createPrompt(text);
 
 
-let data;
+        const response =
+            await fetch(
+                API_URL,
+                {
 
-try{
+                    method:"POST",
 
-data =
-JSON.parse(raw);
+                    headers:{
+                        "Content-Type":
+                            "application/json",
 
-}catch{
+                        "Accept":
+                            "application/json"
+                    },
 
-throw new Error(
-"API вернул неправильный ответ."
-);
+                    body:
+                        JSON.stringify({
 
-}
+                            message:
+                                prompt
 
+                        })
 
-loading.remove();
-
-
-let answer =
-data.reply ||
-data.response ||
-data.message ||
-data.answer;
-
-
-if(typeof answer !== "string"){
-
-answer =
-JSON.stringify(
-data,
-null,
-2
-);
-
-}
+                }
+            );
 
 
-lastAnswer =
-answer;
+        const raw =
+            await response.text();
 
 
-addMessage(
-answer,
-"bot"
-);
+        if(!response.ok){
+
+            throw new Error(
+                "Ошибка сервера " +
+                response.status +
+                ": " +
+                raw
+            );
+
+        }
 
 
-speak(
-answer,
-selectedLanguage
-);
+        let data;
+
+        try{
+
+            data =
+                JSON.parse(raw);
+
+        }catch{
+
+            throw new Error(
+                "API вернул неправильный ответ."
+            );
+
+        }
 
 
-statusText.textContent =
-"Онлайн 🟢";
+        loading.remove();
 
 
-}catch(error){
-
-loading.remove();
-
-console.error(error);
-
-
-addMessage(
-"❌ Ошибка подключения:\n" +
-error.message,
-"error"
-);
+        let answer =
+            data.reply ||
+            data.response ||
+            data.message ||
+            data.answer;
 
 
-statusText.textContent =
-"Ошибка подключения 🔴";
+        if(typeof answer !== "string"){
 
-}
+            answer =
+                JSON.stringify(
+                    data,
+                    null,
+                    2
+                );
+
+        }
+
+
+        lastAnswer =
+            answer;
+
+
+        addMessage(
+            answer,
+            "bot"
+        );
+
+
+        speak(
+            answer,
+            selectedLanguage
+        );
+
+
+        statusText.textContent =
+            "Онлайн 🟢";
+
+
+    }catch(error){
+
+        loading.remove();
+
+        console.error(error);
+
+
+        addMessage(
+            "❌ Ошибка подключения:\n" +
+            error.message,
+            "error"
+        );
+
+
+        statusText.textContent =
+            "Ошибка подключения 🔴";
+
+    }
 
 }
 
@@ -513,69 +676,89 @@ statusText.textContent =
 ========================= */
 
 input.addEventListener(
-"keydown",
-function(event){
+    "keydown",
+    function(event){
 
-if(event.key==="Enter"){
-sendMessage();
-}
+        if(event.key === "Enter"){
 
-});
+            sendMessage();
+
+        }
+
+    }
+);
 
 
 /* =========================
    ГОЛОС ЗЕИ
 ========================= */
 
-function speak(text,lang){
+function speak(
+    text,
+    lang
+){
 
-if(!("speechSynthesis" in window))
-return;
-
-window.speechSynthesis.cancel();
-
-
-const speech =
-new SpeechSynthesisUtterance(text);
-
-speech.lang =
-lang || language.value;
-
-speech.rate =
-0.95;
-
-speech.pitch =
-1;
-
-speech.volume =
-1;
+    if(
+        !("speechSynthesis" in window)
+    ){
+        return;
+    }
 
 
-window.speechSynthesis.speak(
-speech
-);
+    window.speechSynthesis.cancel();
+
+
+    const speech =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    speech.lang =
+        lang || language.value;
+
+
+    speech.rate =
+        0.95;
+
+
+    speech.pitch =
+        1;
+
+
+    speech.volume =
+        1;
+
+
+    window.speechSynthesis.speak(
+        speech
+    );
 
 }
 
+
+/* =========================
+   ПОСЛЕДНИЙ ОТВЕТ
+========================= */
 
 function speakLast(){
 
-if(!lastAnswer){
+    if(!lastAnswer){
 
-addMessage(
-"Сначала поговори со мной 😊",
-"bot"
-);
+        addMessage(
+            "Сначала поговори со мной 😊",
+            "bot"
+        );
 
-return;
+        return;
 
-}
+    }
 
 
-speak(
-lastAnswer,
-language.value
-);
+    speak(
+        lastAnswer,
+        language.value
+    );
 
 }
 
@@ -586,81 +769,86 @@ language.value
 
 function startVoice(){
 
-const Recognition =
-window.SpeechRecognition ||
-window.webkitSpeechRecognition;
+    const Recognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
 
 
-if(!Recognition){
+    if(!Recognition){
 
-addMessage(
-"🎙️ Голосовой ввод не поддерживается этим браузером.",
-"error"
-);
+        addMessage(
+            "🎙️ Голосовой ввод не поддерживается этим браузером.",
+            "error"
+        );
 
-return;
+        return;
 
-}
-
-
-const recognition =
-new Recognition();
+    }
 
 
-recognition.lang =
-language.value;
-
-recognition.interimResults =
-false;
-
-recognition.continuous =
-false;
+    const recognition =
+        new Recognition();
 
 
-statusText.textContent =
-"Слушаю тебя... 🎙️";
+    recognition.lang =
+        language.value;
 
 
-recognition.start();
+    recognition.interimResults =
+        false;
 
 
-recognition.onresult =
-function(event){
-
-const text =
-event.results[0][0]
-.transcript;
-
-input.value =
-text;
-
-sendMessage();
-
-};
+    recognition.continuous =
+        false;
 
 
-recognition.onerror =
-function(event){
-
-addMessage(
-"❌ Ошибка микрофона: " +
-event.error,
-"error"
-);
-
-statusText.textContent =
-"Готова помочь ✨";
-
-};
+    statusText.textContent =
+        "Слушаю тебя... 🎙️";
 
 
-recognition.onend =
-function(){
+    recognition.start();
 
-statusText.textContent =
-"Готова помочь ✨";
 
-};
+    recognition.onresult =
+        function(event){
+
+            const text =
+                event.results[0][0]
+                    .transcript;
+
+
+            input.value =
+                text;
+
+
+            sendMessage();
+
+        };
+
+
+    recognition.onerror =
+        function(event){
+
+            addMessage(
+                "❌ Ошибка микрофона: " +
+                event.error,
+                "error"
+            );
+
+
+            statusText.textContent =
+                "Готова помочь ✨";
+
+        };
+
+
+    recognition.onend =
+        function(){
+
+            statusText.textContent =
+                "Готова помочь ✨";
+
+        };
 
 }
 
@@ -671,35 +859,283 @@ statusText.textContent =
 
 function openCamera(){
 
-const camera =
-document.createElement("input");
-
-camera.type =
-"file";
-
-camera.accept =
-"image/*";
-
-camera.capture =
-"environment";
+    const camera =
+        document.createElement("input");
 
 
-camera.onchange =
-function(){
+    camera.type =
+        "file";
 
-if(camera.files.length > 0){
 
-addMessage(
-"📸 Фото получено. Анализ изображения подключим следующим шагом.",
-"bot"
-);
+    camera.accept =
+        "image/*";
+
+
+    camera.capture =
+        "environment";
+
+
+    camera.onchange =
+        async function(){
+
+            if(
+                !camera.files ||
+                !camera.files.length
+            ){
+                return;
+            }
+
+
+            const file =
+                camera.files[0];
+
+
+            statusText.textContent =
+                "Зея смотрит на фото... 👀";
+
+
+            addMessage(
+                "📸 Фото получено.",
+                "user"
+            );
+
+
+            const loading =
+                addMessage(
+                    "🔍 Зея анализирует изображение...",
+                    "bot loading"
+                );
+
+
+            try{
+
+                /*
+                 * Превращаем фотографию
+                 * в Data URL / Base64
+                 */
+
+                const image =
+                    await fileToDataURL(
+                        file
+                    );
+
+
+                const selectedLanguage =
+                    language.value;
+
+
+                const languageName =
+                    languageNames[
+                        selectedLanguage
+                    ];
+
+
+                const prompt =
+
+                    "Пользователь выбрал язык: " +
+                    languageName +
+                    ". " +
+
+                    "Ты — Зея, личный AI-помощник. " +
+
+                    "Пользователь отправил тебе фотографию. " +
+
+                    "Внимательно проанализируй изображение. " +
+
+                    "Опиши, что на нём находится. " +
+
+                    "Если на фотографии есть текст, " +
+                    "прочитай и объясни его. " +
+
+                    "Если видишь предмет, человека, животное, " +
+                    "место или другую сцену — опиши её. " +
+
+                    "Не придумывай то, чего не видно. " +
+
+                    "Ответь пользователю строго на " +
+                    languageName +
+                    ".";
+
+
+                const response =
+                    await fetch(
+                        API_URL,
+                        {
+
+                            method:"POST",
+
+                            headers:{
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+
+                            },
+
+
+                            body:
+                                JSON.stringify({
+
+                                    message:
+                                        prompt,
+
+                                    image:
+                                        image
+
+                                })
+
+                        }
+                    );
+
+
+                const raw =
+                    await response.text();
+
+
+                if(!response.ok){
+
+                    throw new Error(
+                        "Ошибка сервера " +
+                        response.status +
+                        ": " +
+                        raw
+                    );
+
+                }
+
+
+                let data;
+
+
+                try{
+
+                    data =
+                        JSON.parse(raw);
+
+                }catch{
+
+                    throw new Error(
+                        "API вернул неправильный ответ."
+                    );
+
+                }
+
+
+                loading.remove();
+
+
+                let answer =
+                    data.reply ||
+                    data.response ||
+                    data.message ||
+                    data.answer;
+
+
+                if(
+                    typeof answer !== "string"
+                ){
+
+                    answer =
+                        JSON.stringify(
+                            data,
+                            null,
+                            2
+                        );
+
+                }
+
+
+                lastAnswer =
+                    answer;
+
+
+                addMessage(
+                    answer,
+                    "bot"
+                );
+
+
+                speak(
+                    answer,
+                    selectedLanguage
+                );
+
+
+                statusText.textContent =
+                    "Фото проанализировано 🟢";
+
+
+            }catch(error){
+
+                loading.remove();
+
+
+                console.error(error);
+
+
+                addMessage(
+                    "❌ Не удалось проанализировать фото:\n" +
+                    error.message,
+                    "error"
+                );
+
+
+                statusText.textContent =
+                    "Ошибка анализа 🔴";
+
+            }
+
+        };
+
+
+    camera.click();
 
 }
 
-};
+
+/* =========================
+   FILE → DATA URL
+========================= */
+
+function fileToDataURL(file){
+
+    return new Promise(
+        function(resolve,reject){
+
+            const reader =
+                new FileReader();
 
 
-camera.click();
+            reader.onload =
+                function(){
+
+                    resolve(
+                        reader.result
+                    );
+
+                };
+
+
+            reader.onerror =
+                function(){
+
+                    reject(
+                        new Error(
+                            "Не удалось прочитать фотографию."
+                        )
+                    );
+
+                };
+
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
 
 }
 
