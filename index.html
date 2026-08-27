@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Теоман</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: #080d1b;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+.container {
+    max-width: 850px;
+    margin: auto;
+    padding: 18px;
+}
+.header {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.online {
+    color: #45d65a;
+    font-size: 15px;
+    margin-top: 5px;
+}
+.chat {
+    background: #111827;
+    border: 2px solid #263653;
+    border-radius: 28px;
+    padding: 18px;
+    min-height: 420px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+.message {
+    padding: 15px 18px;
+    border-radius: 22px;
+    margin: 12px 0;
+    max-width: 90%;
+    font-size: 18px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+}
+.user {
+    background: #3563df;
+    margin-left: auto;
+    text-align: right;
+}
+.bot {
+    background: #202a3d;
+    margin-right: auto;
+}
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+input {
+    flex: 1;
+    background: #111827;
+    border: 2px solid #30415f;
+    color: white;
+    border-radius: 22px;
+    padding: 17px;
+    font-size: 18px;
+    outline: none;
+}
+button {
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 20px;
+    cursor: pointer;
+}
+.send {
+    background: #3563df;
+}
+.voice {
+    width: 100%;
+    margin-top: 15px;
+    background: #4caf50;
+    font-size: 20px;
+}
+.voice.listening {
+    background: #d93434;
+}
+.speak {
+    width: 100%;
+    margin-top: 12px;
+    background: #7437e8;
+}
+.clear {
+    width: 100%;
+    margin-top: 12px;
+    background: #283449;
+}
+.status {
+    text-align: center;
+    color: #9aa7bd;
+    min-height: 24px;
+    margin-top: 8px;
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+    .header {
+        font-size: 24px;
+    }
+    .chat {
+        min-height: 430px;
+    }
+    .message {
+        font-size: 17px;
+    }
+    button {
+        font-size: 17px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        🟢 Теоман Онлайн
+        <div class="online">Готов тебя слушать</div>
+    </div>
+    <div id="chat" class="chat"></div>
+    <div class="input-area">
+        <input
+            id="input"
+            type="text"
+            placeholder="Напиши Теоману..."
+            autocomplete="off"
+        >
+        <button class="send" onclick="sendMessage()">➤</button>
+    </div>
+    <div id="status" class="status"></div>
+    <button
+        id="voiceButton"
+        class="voice"
+        onclick="startVoice()">
+        🎙️ Говорить с Теоманом
+    </button>
+    <button
+        class="speak"
+        onclick="speakLastAnswer()">
+        🔊 Озвучить последний ответ
+    </button>
+    <button
+        class="clear"
+        onclick="clearChat()">
+        🧹 Очистить память
+    </button>
+</div>
+<script>
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+const statusText = document.getElementById("status");
+const voiceButton = document.getElementById("voiceButton");
+let lastAnswer = "";
+let recognition = null;
+/* =========================
+   ПАМЯТЬ ПЕРЕПИСКИ
+========================= */
+let memory = JSON.parse(
+    localStorage.getItem("teoman_memory") || "[]"
+);
+function saveMemory() {
+    localStorage.setItem(
+        "teoman_memory",
+        JSON.stringify(memory)
+    );
+}
+/* =========================
+   ПОКАЗ ЧАТА
+========================= */
+function addMessage(text, type) {
+    const message = document.createElement("div");
+    message.className =
+        "message " + type;
+    message.textContent = text;
+    chat.appendChild(message);
+    chat.scrollTop = chat.scrollHeight;
+}
+/* =========================
+   ЗАГРУЗКА ПАМЯТИ
+========================= */
+function loadMemory() {
+    chat.innerHTML = "";
+    if (memory.length === 0) {
+        addMessage(
+            "Привет! 👋 Я Теоман. Чем могу помочь?",
+            "bot"
+        );
+        return;
+    }
+    for (const item of memory) {
+        addMessage(
+            item.text,
+            item.role === "user"
+                ? "user"
+                : "bot"
+        );
+        if (item.role === "assistant") {
+            lastAnswer = item.text;
+        }
+    }
+}
+loadMemory();
+/* =========================
+   ОТПРАВКА СООБЩЕНИЯ
+========================= */
+async function sendMessage() {
+    const message = input.value.trim();
+    if (!message) return;
+    addMessage(message, "user");
+    memory.push({
+        role: "user",
+        text: message
+    });
+    saveMemory();
+    input.value = "";
+    statusText.textContent =
+        "Теоман думает... 🤖";
+    try {
+        const response = await fetch(
+            "/api/chat",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            }
+        );
+        if (!response.ok) {
+            throw new Error(
+                "Ошибка сервера: " +
+                response.status
+            );
+        }
+        const data =
+            await response.json();
+        const answer =
+            data.reply || "Я не получил ответ.";
+        lastAnswer = answer;
+        addMessage(
+            answer,
+            "bot"
+        );
+        memory.push({
+            role: "assistant",
+            text: answer
+        });
+        saveMemory();
+        statusText.textContent = "";
+    } catch (error) {
+        console.error(error);
+        addMessage(
+            "Не получилось связаться с сервером 😕",
+            "bot"
+        );
+        statusText.textContent =
+            "Ошибка соединения";
+    }
+}
+/* =========================
+   ENTER = ОТПРАВИТЬ
+========================= */
+input.addEventListener(
+    "keydown",
+    function(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    }
+);
+/* =========================
+   ГОЛОСОВОЙ ВВОД
+========================= */
+function startVoice() {
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert(
+            "Голосовой ввод не поддерживается этим браузером."
+        );
+        return;
+    }
+    if (recognition) {
+        recognition.stop();
+        recognition = null;
+        return;
+    }
+    recognition =
+        new SpeechRecognition();
+    recognition.lang = "ru-RU";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.onstart = function() {
+        voiceButton.classList.add(
+            "listening"
+        );
+        voiceButton.textContent =
+            "🔴 Слушаю тебя...";
+        statusText.textContent =
+            "Говори...";
+    };
+    recognition.onresult =
+        function(event) {
+            const text =
+                event.results[0][0]
+                .transcript;
+            input.value = text;
+            voiceButton.classList.remove(
+                "listening"
+            );
+            voiceButton.textContent =
+                "🎙️ Говорить с Теоманом";
+            statusText.textContent = "";
+            recognition.stop();
+            recognition = null;
+            sendMessage();
+        };
+    recognition.onerror =
+        function(event) {
+            console.log(
+                "Ошибка микрофона:",
+                event.error
+            );
+            voiceButton.classList.remove(
+                "listening"
+            );
+            voiceButton.textContent =
+                "🎙️ Говорить с Теоманом";
+            statusText.textContent =
+                "Не удалось услышать голос";
+            recognition = null;
+        };
+    recognition.onend = function() {
+        voiceButton.classList.remove(
+            "listening"
+        );
+        voiceButton.textContent =
+            "🎙️ Говорить с Теоманом";
+        recognition = null;
+    };
+    recognition.start();
+}
+/* =========================
+   ОЗВУЧИВАНИЕ
+========================= */
+function speakLastAnswer() {
+    if (!lastAnswer) {
+        alert(
+            "Пока нечего озвучивать."
+        );
+        return;
+    }
+    window.speechSynthesis.cancel();
+    const speech =
+        new SpeechSynthesisUtterance(
+            lastAnswer
+        );
+    speech.lang = "ru-RU";
+    speech.rate = 1;
+    speech.pitch = 1;
+    window.speechSynthesis.speak(
+        speech
+    );
+}
+/* =========================
+   ОЧИСТКА ПАМЯТИ
+========================= */
+function clearChat() {
+    window.speechSynthesis.cancel();
+    memory = [];
+    localStorage.removeItem(
+        "teoman_memory"
+    );
+    lastAnswer = "";
+    chat.innerHTML = "";
+    addMessage(
+        "Чат очищен 🧹\nЯ снова готов тебя слушать!",
+        "bot"
+    );
+    statusText.textContent = "";
+}
+</script>
+</body>
+</html>
