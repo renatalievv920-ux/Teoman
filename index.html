@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Теоман</title>
+
+<style>
+body {
+    margin: 0;
+    background: #111827;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.container {
+    padding: 30px 20px;
+}
+
+h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.status {
+    color: #9ca3af;
+    margin-bottom: 30px;
+}
+
+button {
+    width: 90%;
+    max-width: 350px;
+    padding: 18px;
+    margin: 10px;
+    border: none;
+    border-radius: 15px;
+    font-size: 20px;
+    background: #2563eb;
+    color: white;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+#answer {
+    margin-top: 30px;
+    font-size: 20px;
+    min-height: 50px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🤖 Теоман</h1>
+
+<div class="status">Я готов работать</div>
+
+<button onclick="sayHello()">👋 Поздороваться</button>
+
+<button onclick="openYouTube()">▶️ Открыть YouTube</button>
+
+<button onclick="openWhatsApp()">💬 Открыть WhatsApp</button>
+
+<button onclick="tellTime()">🕐 Который час?</button>
+
+<div id="answer"></div>
+
+</div>
+
+<script>
+
+function speak(text) {
+    document.getElementById("answer").innerText = text;
+
+    if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+
+        let voice = new SpeechSynthesisUtterance(text);
+        voice.lang = "ru-RU";
+        voice.rate = 1;
+
+        speechSynthesis.speak(voice);
+    }
+}
+
+function sayHello() {
+    speak("Привет! Я Теоман. Я готов работать.");
+}
+
+function openYouTube() {
+    speak("Открываю YouTube.");
+    setTimeout(() => {
+        window.open("https://www.youtube.com", "_blank");
+    }, 800);
+}
+
+function openWhatsApp() {
+    speak("Открываю WhatsApp.");
+    setTimeout(() => {
+        window.open("https://web.whatsapp.com", "_blank");
+    }, 800);
+}
+
+function tellTime() {
+    let now = new Date();
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+
+    speak("Сейчас " + hours + " часов " + minutes + " минут.");
+}
+
+</script>
+
+</body>
+</html>
